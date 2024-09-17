@@ -45,7 +45,8 @@ context.check_hostname = False
 context.verify_mode = ssl.CERT_NONE  
 
 # Bind socket to local address
-server_addr = ('localhost', 8080)  
+server_addr = ('20.13.138.208', 8080)
+#server_addr = ('localhost', 8080)  
 secure_sock = context.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
 secure_sock.connect(server_addr)
 print(f"Connected to the server {server_addr}.")
@@ -94,9 +95,8 @@ def send_messages():
                     print(f"Sending: {message.bin()}")
                     rtp_packet = create_rtp_packet(message.bin())
                     encrypted_rtp_packet = encrypt_rtp_packet(rtp_packet)
-                    secure_sock.sendall(encrypted_rtp_packet)  # Send encrypted RTP packet to server
-                    
-                    # Optional: Implement a keep-alive mechanism
+                    # Send encrypted RTP packet to server
+                    secure_sock.sendall(encrypted_rtp_packet)                    # Optional: Implement a keep-alive mechanism
                     time.sleep(0.1)  # Adjust as necessary for your application
                     
         except Exception as e:

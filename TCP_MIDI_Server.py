@@ -10,10 +10,10 @@ import threading
 
 # Load the server's private key and certificate
 server_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-server_context.load_cert_chain(certfile="C:/Users/ziad2/Documents/Internship/Projet/TCP_MIDI_SECURE-main/TCP_MIDI_SECURE-main/server_certificate.pem", keyfile="C:/Users/ziad2/Documents/Internship/Projet/TCP_MIDI_SECURE-main/TCP_MIDI_SECURE-main/server_private_key.pem")
+server_context.load_cert_chain(certfile="/Users/damienmcevoy/Documents/GitHub/TCP_MIDI/server_certificate.pem", keyfile="/Users/damienmcevoy/Documents/GitHub/TCP_MIDI/server_private_key.pem")
 # Create a secure socket and bind to port 8080
 secure_sock = server_context.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM), server_side=True)
-server_address = ('0.0.0.0', 8080)
+server_address = ('localhost', 8080)
 print(f"Starting up on {server_address}")
 secure_sock.bind(server_address)
 secure_sock.listen()

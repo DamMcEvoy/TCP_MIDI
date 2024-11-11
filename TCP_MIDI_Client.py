@@ -7,6 +7,23 @@ from Cryptodome.Cipher import AES
 from Cryptodome.Random import get_random_bytes
 import time
 
+class DummyPort:
+    def __init__(self):
+        self.name = 'DummyPort'
+        self.closed = False
+
+    def send(self, message):
+        pass
+
+    def receive(self):
+        return None
+
+    def close(self):
+        self.closed = True
+
+    def is_open(self):
+        return not self.closed
+
 # RTP packet format
 RTP_VERSION = 2
 RTP_PAYLOAD_TYPE = 96  # dynamic payload type
@@ -37,7 +54,8 @@ def decrypt_rtp_packet(encrypted_rtp_packet):
     ciphertext = encrypted_rtp_packet[16:]
     cipher = AES.new(key, AES.MODE_ECB)
     decrypted_rtp_packet = cipher.decrypt(ciphertext)
-    return decrypted_rtp_packet.rstrip(b'\x00')  # Remove any padding
+    decrypted_rtp_packet.rstrip(b'\x00')  # Remove any padding
+    return decrypted_rtp_packet
 
 # Create a SSL/TLS context
 context = ssl.create_default_context()
@@ -52,7 +70,7 @@ secure_sock.connect(server_addr)
 print(f"Connected to the server {server_addr}.")
 
 # Receive the unique client ID from the server
-client_id = secure_sock.recv(1024).decode()
+client_id = secure_sock.recv(128).decode()
 print(f"Connected to the server. Your unique client ID is: {client_id}")
 
 def print_ports(heading, port_names):
@@ -63,24 +81,33 @@ def print_ports(heading, port_names):
         index += 1
     print()
 
-inputports = mido.get_input_names()
-outputports = mido.get_output_names()
+inputports = ['DummyPort'] + mido.get_input_names()
+outputports = ['DummyPort'] + mido.get_output_names()
+
+def print_ports(header, ports):
+    print(header)
+    for i, port in enumerate(ports, 1):
+        print(f"{i}: {port}")
+
 print_ports('Input Ports:', inputports)
 print_ports('Output Ports:', outputports)
 
 def select_inputport(MIDIinport):
     MIDIinput_selection = int(MIDIinport)
-    print(f"You Selected the MIDI Input Port: '{inputports[(MIDIinput_selection)-1]}'")
-    return inputports[(MIDIinput_selection)-1]
+    selected_port = inputports[MIDIinput_selection - 1]
+    print(f"You Selected the MIDI Input Port: '{selected_port}'")
+    return DummyPort() if selected_port == 'DummyPort' else selected_port
 
 def select_outputport(MIDIoutport):
     MIDIoutput_selection = int(MIDIoutport)
-    print(f"You Selected the MIDI Output Port: '{outputports[(MIDIoutput_selection)-1]}'")
-    return outputports[(MIDIoutput_selection)-1]
+    selected_port = outputports[MIDIoutput_selection - 1]
+    print(f"You Selected the MIDI Output Port: '{selected_port}'")
+    return DummyPort() if selected_port == 'DummyPort' else selected_port
 
 print("Select the MIDI Input Port: ")
 MIDIinport = input()
 MIDI_inPortName = select_inputport(MIDIinport)
+
 print("Select the MIDI Output Port: ")
 MIDIoutport = input()
 MIDI_outPortName = select_outputport(MIDIoutport)
@@ -92,12 +119,12 @@ def send_messages():
                 print(f'Using {port}')
                 print('Waiting for messages...')
                 for message in port:
-                    print(f"Sending: {message.bin()}")
+                    print(f"Sending: {message}")
                     rtp_packet = create_rtp_packet(message.bin())
                     encrypted_rtp_packet = encrypt_rtp_packet(rtp_packet)
                     # Send encrypted RTP packet to server
                     secure_sock.sendall(encrypted_rtp_packet)                    # Optional: Implement a keep-alive mechanism
-                    time.sleep(0.1)  # Adjust as necessary for your application
+                    #time.sleep(0.1)  # Adjust as necessary for your application
                     
         except Exception as e:
             print(f"Error sending message: {e}")
@@ -106,7 +133,7 @@ def send_messages():
 def receive_messages(sock):
     while True:
         try:
-            response = sock.recv(4096)
+            response = sock.recv(128)
             if response:
                 decrypted_rtp_packet = decrypt_rtp_packet(response)
                 midi_message = decrypted_rtp_packet[12:]  # Extract MIDI message from RTP packet

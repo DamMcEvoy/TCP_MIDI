@@ -54,7 +54,8 @@ def decrypt_rtp_packet(encrypted_rtp_packet):
     ciphertext = encrypted_rtp_packet[16:]
     cipher = AES.new(key, AES.MODE_ECB)
     decrypted_rtp_packet = cipher.decrypt(ciphertext)
-    return decrypted_rtp_packet.rstrip(b'\x00')  # Remove any padding
+    decrypted_rtp_packet.rstrip(b'\x00')  # Remove any padding
+    return decrypted_rtp_packet
 
 # Create a SSL/TLS context
 context = ssl.create_default_context()
@@ -69,7 +70,7 @@ secure_sock.connect(server_addr)
 print(f"Connected to the server {server_addr}.")
 
 # Receive the unique client ID from the server
-client_id = secure_sock.recv(1024).decode()
+client_id = secure_sock.recv(128).decode()
 print(f"Connected to the server. Your unique client ID is: {client_id}")
 
 def print_ports(heading, port_names):
@@ -118,12 +119,12 @@ def send_messages():
                 print(f'Using {port}')
                 print('Waiting for messages...')
                 for message in port:
-                    print(f"Sending: {message.bin()}")
+                    print(f"Sending: {message}")
                     rtp_packet = create_rtp_packet(message.bin())
                     encrypted_rtp_packet = encrypt_rtp_packet(rtp_packet)
                     # Send encrypted RTP packet to server
                     secure_sock.sendall(encrypted_rtp_packet)                    # Optional: Implement a keep-alive mechanism
-                    time.sleep(0.1)  # Adjust as necessary for your application
+                    #time.sleep(0.1)  # Adjust as necessary for your application
                     
         except Exception as e:
             print(f"Error sending message: {e}")
@@ -132,7 +133,7 @@ def send_messages():
 def receive_messages(sock):
     while True:
         try:
-            response = sock.recv(4096)
+            response = sock.recv(128)
             if response:
                 decrypted_rtp_packet = decrypt_rtp_packet(response)
                 midi_message = decrypted_rtp_packet[12:]  # Extract MIDI message from RTP packet

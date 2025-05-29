@@ -89,26 +89,26 @@ def print_ports(header, ports):
     for i, port in enumerate(ports, 1):
         print(f"{i}: {port}")
 
-print_ports('Input Ports:', inputports)
-print_ports('Output Ports:', outputports)
+print_ports('Sending MIDI Port:', inputports)
+print_ports('Receiving MIDI Port:', outputports)
 
 def select_inputport(MIDIinport):
     MIDIinput_selection = int(MIDIinport)
     selected_port = inputports[MIDIinput_selection - 1]
-    print(f"You Selected the MIDI Input Port: '{selected_port}'")
+    print(f"The Sending MIDI Port you selected is: '{selected_port}'")
     return DummyPort() if selected_port == 'DummyPort' else selected_port
 
 def select_outputport(MIDIoutport):
     MIDIoutput_selection = int(MIDIoutport)
     selected_port = outputports[MIDIoutput_selection - 1]
-    print(f"You Selected the MIDI Output Port: '{selected_port}'")
+    print(f"The Receiving MIDI Port you selected is: '{selected_port}'")
     return DummyPort() if selected_port == 'DummyPort' else selected_port
 
-print("Select the MIDI Input Port: ")
+print("Select the Sending MIDI Port: ")
 MIDIinport = input()
 MIDI_inPortName = select_inputport(MIDIinport)
 
-print("Select the MIDI Output Port: ")
+print("Select Receiving MIDI Port: ")
 MIDIoutport = input()
 MIDI_outPortName = select_outputport(MIDIoutport)
 

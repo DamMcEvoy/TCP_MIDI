@@ -1,0 +1,41 @@
+cmake_minimum_required(VERSION 3.10)
+project(tcp_midi_client)
+
+set(CMAKE_CXX_STANDARD 17)
+
+# Include directories for RtMidi and OpenSSL
+include_directories(
+  /opt/homebrew/Cellar/rtmidi/6.0.0/include
+  /opt/homebrew/opt/openssl@3/include
+)
+
+# Library directories (if needed)
+link_directories(
+  /opt/homebrew/Cellar/rtmidi/6.0.0/lib
+  /opt/homebrew/opt/openssl@3/lib
+)
+
+# Build TcpConnection as a static library
+add_library(TcpConnection STATIC TcpConnection.cpp)
+
+# Build client executable, now including midiHandler.cpp
+add_executable(client
+  main.cpp
+  midiHandler.cpp
+)
+
+# Link TcpConnection static library with required system libs
+target_link_libraries(TcpConnection
+  ssl
+  crypto
+  pthread
+)
+
+# Link client executable with TcpConnection, RtMidi and system libs
+target_link_libraries(client
+  TcpConnection
+  rtmidi
+  ssl
+  crypto
+  pthread
+)

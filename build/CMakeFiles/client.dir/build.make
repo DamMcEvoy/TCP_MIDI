@@ -53,10 +53,10 @@ RM = /opt/homebrew/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202
+CMAKE_SOURCE_DIR = /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build
+CMAKE_BINARY_DIR = /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/client.dir/depend.make
@@ -73,47 +73,148 @@ CMakeFiles/client.dir/codegen:
 .PHONY : CMakeFiles/client.dir/codegen
 
 CMakeFiles/client.dir/main.cpp.o: CMakeFiles/client.dir/flags.make
-CMakeFiles/client.dir/main.cpp.o: /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/main.cpp
+CMakeFiles/client.dir/main.cpp.o: /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/main.cpp
 CMakeFiles/client.dir/main.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/client.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/main.cpp.o -MF CMakeFiles/client.dir/main.cpp.o.d -o CMakeFiles/client.dir/main.cpp.o -c /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/client.dir/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/main.cpp.o -MF CMakeFiles/client.dir/main.cpp.o.d -o CMakeFiles/client.dir/main.cpp.o -c /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/main.cpp
 
 CMakeFiles/client.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/main.cpp > CMakeFiles/client.dir/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/main.cpp > CMakeFiles/client.dir/main.cpp.i
 
 CMakeFiles/client.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/main.cpp -o CMakeFiles/client.dir/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/main.cpp -o CMakeFiles/client.dir/main.cpp.s
 
-CMakeFiles/client.dir/midiHandler.cpp.o: CMakeFiles/client.dir/flags.make
-CMakeFiles/client.dir/midiHandler.cpp.o: /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/midiHandler.cpp
-CMakeFiles/client.dir/midiHandler.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/client.dir/midiHandler.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/midiHandler.cpp.o -MF CMakeFiles/client.dir/midiHandler.cpp.o.d -o CMakeFiles/client.dir/midiHandler.cpp.o -c /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/midiHandler.cpp
+CMakeFiles/client.dir/AppController.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/AppController.cpp.o: /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/AppController.cpp
+CMakeFiles/client.dir/AppController.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/client.dir/AppController.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/AppController.cpp.o -MF CMakeFiles/client.dir/AppController.cpp.o.d -o CMakeFiles/client.dir/AppController.cpp.o -c /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/AppController.cpp
 
-CMakeFiles/client.dir/midiHandler.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/midiHandler.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/midiHandler.cpp > CMakeFiles/client.dir/midiHandler.cpp.i
+CMakeFiles/client.dir/AppController.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/AppController.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/AppController.cpp > CMakeFiles/client.dir/AppController.cpp.i
 
-CMakeFiles/client.dir/midiHandler.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/midiHandler.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/midiHandler.cpp -o CMakeFiles/client.dir/midiHandler.cpp.s
+CMakeFiles/client.dir/AppController.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/AppController.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/AppController.cpp -o CMakeFiles/client.dir/AppController.cpp.s
+
+CMakeFiles/client.dir/GuiApp.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/GuiApp.cpp.o: /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/GuiApp.cpp
+CMakeFiles/client.dir/GuiApp.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/client.dir/GuiApp.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/GuiApp.cpp.o -MF CMakeFiles/client.dir/GuiApp.cpp.o.d -o CMakeFiles/client.dir/GuiApp.cpp.o -c /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/GuiApp.cpp
+
+CMakeFiles/client.dir/GuiApp.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/GuiApp.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/GuiApp.cpp > CMakeFiles/client.dir/GuiApp.cpp.i
+
+CMakeFiles/client.dir/GuiApp.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/GuiApp.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/GuiApp.cpp -o CMakeFiles/client.dir/GuiApp.cpp.s
+
+CMakeFiles/client.dir/transportClient.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/transportClient.cpp.o: /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/transportClient.cpp
+CMakeFiles/client.dir/transportClient.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/client.dir/transportClient.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/transportClient.cpp.o -MF CMakeFiles/client.dir/transportClient.cpp.o.d -o CMakeFiles/client.dir/transportClient.cpp.o -c /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/transportClient.cpp
+
+CMakeFiles/client.dir/transportClient.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/transportClient.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/transportClient.cpp > CMakeFiles/client.dir/transportClient.cpp.i
+
+CMakeFiles/client.dir/transportClient.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/transportClient.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/transportClient.cpp -o CMakeFiles/client.dir/transportClient.cpp.s
+
+CMakeFiles/client.dir/timeSync.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/timeSync.cpp.o: /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/timeSync.cpp
+CMakeFiles/client.dir/timeSync.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/client.dir/timeSync.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/timeSync.cpp.o -MF CMakeFiles/client.dir/timeSync.cpp.o.d -o CMakeFiles/client.dir/timeSync.cpp.o -c /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/timeSync.cpp
+
+CMakeFiles/client.dir/timeSync.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/timeSync.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/timeSync.cpp > CMakeFiles/client.dir/timeSync.cpp.i
+
+CMakeFiles/client.dir/timeSync.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/timeSync.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/timeSync.cpp -o CMakeFiles/client.dir/timeSync.cpp.s
+
+CMakeFiles/client.dir/receiveScheduler.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/receiveScheduler.cpp.o: /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/receiveScheduler.cpp
+CMakeFiles/client.dir/receiveScheduler.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/client.dir/receiveScheduler.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/receiveScheduler.cpp.o -MF CMakeFiles/client.dir/receiveScheduler.cpp.o.d -o CMakeFiles/client.dir/receiveScheduler.cpp.o -c /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/receiveScheduler.cpp
+
+CMakeFiles/client.dir/receiveScheduler.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/receiveScheduler.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/receiveScheduler.cpp > CMakeFiles/client.dir/receiveScheduler.cpp.i
+
+CMakeFiles/client.dir/receiveScheduler.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/receiveScheduler.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/receiveScheduler.cpp -o CMakeFiles/client.dir/receiveScheduler.cpp.s
+
+CMakeFiles/client.dir/midiInputHandler.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/midiInputHandler.cpp.o: /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/midiInputHandler.cpp
+CMakeFiles/client.dir/midiInputHandler.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/client.dir/midiInputHandler.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/midiInputHandler.cpp.o -MF CMakeFiles/client.dir/midiInputHandler.cpp.o.d -o CMakeFiles/client.dir/midiInputHandler.cpp.o -c /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/midiInputHandler.cpp
+
+CMakeFiles/client.dir/midiInputHandler.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/midiInputHandler.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/midiInputHandler.cpp > CMakeFiles/client.dir/midiInputHandler.cpp.i
+
+CMakeFiles/client.dir/midiInputHandler.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/midiInputHandler.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/midiInputHandler.cpp -o CMakeFiles/client.dir/midiInputHandler.cpp.s
+
+CMakeFiles/client.dir/midiOutputHandler.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/midiOutputHandler.cpp.o: /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/midiOutputHandler.cpp
+CMakeFiles/client.dir/midiOutputHandler.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/client.dir/midiOutputHandler.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/midiOutputHandler.cpp.o -MF CMakeFiles/client.dir/midiOutputHandler.cpp.o.d -o CMakeFiles/client.dir/midiOutputHandler.cpp.o -c /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/midiOutputHandler.cpp
+
+CMakeFiles/client.dir/midiOutputHandler.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/midiOutputHandler.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/midiOutputHandler.cpp > CMakeFiles/client.dir/midiOutputHandler.cpp.i
+
+CMakeFiles/client.dir/midiOutputHandler.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/midiOutputHandler.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/midiOutputHandler.cpp -o CMakeFiles/client.dir/midiOutputHandler.cpp.s
 
 # Object files for target client
 client_OBJECTS = \
 "CMakeFiles/client.dir/main.cpp.o" \
-"CMakeFiles/client.dir/midiHandler.cpp.o"
+"CMakeFiles/client.dir/AppController.cpp.o" \
+"CMakeFiles/client.dir/GuiApp.cpp.o" \
+"CMakeFiles/client.dir/transportClient.cpp.o" \
+"CMakeFiles/client.dir/timeSync.cpp.o" \
+"CMakeFiles/client.dir/receiveScheduler.cpp.o" \
+"CMakeFiles/client.dir/midiInputHandler.cpp.o" \
+"CMakeFiles/client.dir/midiOutputHandler.cpp.o"
 
 # External object files for target client
 client_EXTERNAL_OBJECTS =
 
 client: CMakeFiles/client.dir/main.cpp.o
-client: CMakeFiles/client.dir/midiHandler.cpp.o
+client: CMakeFiles/client.dir/AppController.cpp.o
+client: CMakeFiles/client.dir/GuiApp.cpp.o
+client: CMakeFiles/client.dir/transportClient.cpp.o
+client: CMakeFiles/client.dir/timeSync.cpp.o
+client: CMakeFiles/client.dir/receiveScheduler.cpp.o
+client: CMakeFiles/client.dir/midiInputHandler.cpp.o
+client: CMakeFiles/client.dir/midiOutputHandler.cpp.o
 client: CMakeFiles/client.dir/build.make
-client: libTcpConnection.a
+client: /opt/homebrew/Cellar/openssl@3/3.6.1/lib/libssl.dylib
+client: /opt/homebrew/Cellar/openssl@3/3.6.1/lib/libcrypto.dylib
+client: /usr/local/lib/liblibremidi.a
+client: libimgui.a
+client: /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2.dylib
+client: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework
 client: CMakeFiles/client.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable client"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable client"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/client.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -125,6 +226,6 @@ CMakeFiles/client.dir/clean:
 .PHONY : CMakeFiles/client.dir/clean
 
 CMakeFiles/client.dir/depend:
-	cd /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202 /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202 /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles/client.dir/DependInfo.cmake "--color=$(COLOR)" client
+	cd /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build /Users/damienmcevoy/PhD/Code/20260427_TCPLibreMIDI/build/CMakeFiles/client.dir/DependInfo.cmake "--color=$(COLOR)" client
 .PHONY : CMakeFiles/client.dir/depend
 

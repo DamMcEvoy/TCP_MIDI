@@ -1,41 +1,62 @@
 cmake_minimum_required(VERSION 3.10)
-project(tcp_midi_client)
+project(TCP_MIDI_Client)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Include directories for RtMidi and OpenSSL
-include_directories(
-  /opt/homebrew/Cellar/rtmidi/6.0.0/include
-  /opt/homebrew/opt/openssl@3/include
+find_package(OpenSSL REQUIRED)
+find_package(Threads REQUIRED)
+find_package(Libremidi REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(OpenGL REQUIRED)
+
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui)
+
+add_library(imgui STATIC
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_sdl2.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
-# Library directories (if needed)
-link_directories(
-  /opt/homebrew/Cellar/rtmidi/6.0.0/lib
-  /opt/homebrew/opt/openssl@3/lib
+target_include_directories(imgui PUBLIC
+    ${IMGUI_DIR}
+    ${IMGUI_DIR}/backends
 )
 
-# Build TcpConnection as a static library
-add_library(TcpConnection STATIC TcpConnection.cpp)
-
-# Build client executable, now including midiHandler.cpp
-add_executable(client
-  main.cpp
-  midiHandler.cpp
+target_link_libraries(imgui PUBLIC
+    SDL2::SDL2
+    OpenGL::GL
 )
 
-# Link TcpConnection static library with required system libs
-target_link_libraries(TcpConnection
-  ssl
-  crypto
-  pthread
+add_executable(TCP_MIDI_Client
+    main.cpp
+    AppController.cpp
+    GuiApp.cpp
+    transportClient.cpp
+    timeSync.cpp
+    receiveScheduler.cpp
+    midiInputHandler.cpp
+    midiOutputHandler.cpp
 )
 
-# Link client executable with TcpConnection, RtMidi and system libs
-target_link_libraries(client
-  TcpConnection
-  rtmidi
-  ssl
-  crypto
-  pthread
+target_include_directories(TCP_MIDI_Client PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+target_link_libraries(TCP_MIDI_Client PRIVATE
+    OpenSSL::SSL
+    OpenSSL::Crypto
+    Threads::Threads
+    libremidi
+    imgui
+    SDL2::SDL2
+    OpenGL::GL
+)
+
+target_compile_definitions(TCP_MIDI_Client PRIVATE LIBREMIDI_HEADER_ONLY=1)
+
+message(STATUS "=== Modular TCP-MIDI TCP_MIDI_Client configured ===")

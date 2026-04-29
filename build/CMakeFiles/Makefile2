@@ -54,22 +54,22 @@ RM = /opt/homebrew/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202
+CMAKE_SOURCE_DIR = /Users/damienmcevoy/PhD/Code/TCP_MIDI
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build
+CMAKE_BINARY_DIR = /Users/damienmcevoy/PhD/Code/TCP_MIDI/build
 
 #=============================================================================
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/TcpConnection.dir/all
-all: CMakeFiles/client.dir/all
+all: CMakeFiles/imgui.dir/all
+all: CMakeFiles/TCP_MIDI_Client.dir/all
 .PHONY : all
 
 # The main recursive "codegen" target.
-codegen: CMakeFiles/TcpConnection.dir/codegen
-codegen: CMakeFiles/client.dir/codegen
+codegen: CMakeFiles/imgui.dir/codegen
+codegen: CMakeFiles/TCP_MIDI_Client.dir/codegen
 .PHONY : codegen
 
 # The main recursive "preinstall" target.
@@ -77,73 +77,73 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/TcpConnection.dir/clean
-clean: CMakeFiles/client.dir/clean
+clean: CMakeFiles/imgui.dir/clean
+clean: CMakeFiles/TCP_MIDI_Client.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/TcpConnection.dir
+# Target rules for target CMakeFiles/imgui.dir
 
 # All Build rule for target.
-CMakeFiles/TcpConnection.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TcpConnection.dir/build.make CMakeFiles/TcpConnection.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TcpConnection.dir/build.make CMakeFiles/TcpConnection.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles --progress-num=1,2 "Built target TcpConnection"
-.PHONY : CMakeFiles/TcpConnection.dir/all
+CMakeFiles/imgui.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles --progress-num=10,11,12,13,14,15,16 "Built target imgui"
+.PHONY : CMakeFiles/imgui.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/TcpConnection.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/TcpConnection.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles 0
-.PHONY : CMakeFiles/TcpConnection.dir/rule
+CMakeFiles/imgui.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles 7
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/imgui.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles 0
+.PHONY : CMakeFiles/imgui.dir/rule
 
 # Convenience name for target.
-TcpConnection: CMakeFiles/TcpConnection.dir/rule
-.PHONY : TcpConnection
+imgui: CMakeFiles/imgui.dir/rule
+.PHONY : imgui
 
 # codegen rule for target.
-CMakeFiles/TcpConnection.dir/codegen:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TcpConnection.dir/build.make CMakeFiles/TcpConnection.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles --progress-num=1,2 "Finished codegen for target TcpConnection"
-.PHONY : CMakeFiles/TcpConnection.dir/codegen
+CMakeFiles/imgui.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles --progress-num=10,11,12,13,14,15,16 "Finished codegen for target imgui"
+.PHONY : CMakeFiles/imgui.dir/codegen
 
 # clean rule for target.
-CMakeFiles/TcpConnection.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TcpConnection.dir/build.make CMakeFiles/TcpConnection.dir/clean
-.PHONY : CMakeFiles/TcpConnection.dir/clean
+CMakeFiles/imgui.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/clean
+.PHONY : CMakeFiles/imgui.dir/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/client.dir
+# Target rules for target CMakeFiles/TCP_MIDI_Client.dir
 
 # All Build rule for target.
-CMakeFiles/client.dir/all: CMakeFiles/TcpConnection.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles --progress-num=3,4,5 "Built target client"
-.PHONY : CMakeFiles/client.dir/all
+CMakeFiles/TCP_MIDI_Client.dir/all: CMakeFiles/imgui.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Built target TCP_MIDI_Client"
+.PHONY : CMakeFiles/TCP_MIDI_Client.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/client.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles 5
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/client.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles 0
-.PHONY : CMakeFiles/client.dir/rule
+CMakeFiles/TCP_MIDI_Client.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles 16
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/TCP_MIDI_Client.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles 0
+.PHONY : CMakeFiles/TCP_MIDI_Client.dir/rule
 
 # Convenience name for target.
-client: CMakeFiles/client.dir/rule
-.PHONY : client
+TCP_MIDI_Client: CMakeFiles/TCP_MIDI_Client.dir/rule
+.PHONY : TCP_MIDI_Client
 
 # codegen rule for target.
-CMakeFiles/client.dir/codegen:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles --progress-num=3,4,5 "Finished codegen for target client"
-.PHONY : CMakeFiles/client.dir/codegen
+CMakeFiles/TCP_MIDI_Client.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Finished codegen for target TCP_MIDI_Client"
+.PHONY : CMakeFiles/TCP_MIDI_Client.dir/codegen
 
 # clean rule for target.
-CMakeFiles/client.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/clean
-.PHONY : CMakeFiles/client.dir/clean
+CMakeFiles/TCP_MIDI_Client.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/clean
+.PHONY : CMakeFiles/TCP_MIDI_Client.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

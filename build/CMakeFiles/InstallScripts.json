@@ -1,7 +1,7 @@
 {
 	"InstallScripts" : 
 	[
-		"/Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/cmake_install.cmake"
+		"/Users/damienmcevoy/PhD/Code/TCP_MIDI/build/cmake_install.cmake"
 	],
 	"Parallel" : false
 }

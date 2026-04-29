@@ -57,10 +57,10 @@ RM = /opt/homebrew/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202
+CMAKE_SOURCE_DIR = /Users/damienmcevoy/PhD/Code/TCP_MIDI
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build
+CMAKE_BINARY_DIR = /Users/damienmcevoy/PhD/Code/TCP_MIDI/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles /Users/damienmcevoy/PhD/Code/TCP_MIDI/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/Documents/GitHub/TCPRTMIDICPP_20251202/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -117,61 +117,229 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named TcpConnection
+# Target rules for targets named imgui
 
 # Build rule for target.
-TcpConnection: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 TcpConnection
-.PHONY : TcpConnection
+imgui: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 imgui
+.PHONY : imgui
 
 # fast build rule for target.
-TcpConnection/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TcpConnection.dir/build.make CMakeFiles/TcpConnection.dir/build
-.PHONY : TcpConnection/fast
+imgui/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/build
+.PHONY : imgui/fast
 
 #=============================================================================
-# Target rules for targets named client
+# Target rules for targets named TCP_MIDI_Client
 
 # Build rule for target.
-client: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client
-.PHONY : client
+TCP_MIDI_Client: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 TCP_MIDI_Client
+.PHONY : TCP_MIDI_Client
 
 # fast build rule for target.
-client/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
-.PHONY : client/fast
+TCP_MIDI_Client/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/build
+.PHONY : TCP_MIDI_Client/fast
 
-TcpConnection.o: TcpConnection.cpp.o
-.PHONY : TcpConnection.o
+AppController.o: AppController.cpp.o
+.PHONY : AppController.o
 
 # target to build an object file
-TcpConnection.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TcpConnection.dir/build.make CMakeFiles/TcpConnection.dir/TcpConnection.cpp.o
-.PHONY : TcpConnection.cpp.o
+AppController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/AppController.cpp.o
+.PHONY : AppController.cpp.o
 
-TcpConnection.i: TcpConnection.cpp.i
-.PHONY : TcpConnection.i
+AppController.i: AppController.cpp.i
+.PHONY : AppController.i
 
 # target to preprocess a source file
-TcpConnection.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TcpConnection.dir/build.make CMakeFiles/TcpConnection.dir/TcpConnection.cpp.i
-.PHONY : TcpConnection.cpp.i
+AppController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/AppController.cpp.i
+.PHONY : AppController.cpp.i
 
-TcpConnection.s: TcpConnection.cpp.s
-.PHONY : TcpConnection.s
+AppController.s: AppController.cpp.s
+.PHONY : AppController.s
 
 # target to generate assembly for a file
-TcpConnection.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TcpConnection.dir/build.make CMakeFiles/TcpConnection.dir/TcpConnection.cpp.s
-.PHONY : TcpConnection.cpp.s
+AppController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/AppController.cpp.s
+.PHONY : AppController.cpp.s
+
+GuiApp.o: GuiApp.cpp.o
+.PHONY : GuiApp.o
+
+# target to build an object file
+GuiApp.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/GuiApp.cpp.o
+.PHONY : GuiApp.cpp.o
+
+GuiApp.i: GuiApp.cpp.i
+.PHONY : GuiApp.i
+
+# target to preprocess a source file
+GuiApp.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/GuiApp.cpp.i
+.PHONY : GuiApp.cpp.i
+
+GuiApp.s: GuiApp.cpp.s
+.PHONY : GuiApp.s
+
+# target to generate assembly for a file
+GuiApp.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/GuiApp.cpp.s
+.PHONY : GuiApp.cpp.s
+
+external/imgui/backends/imgui_impl_opengl3.o: external/imgui/backends/imgui_impl_opengl3.cpp.o
+.PHONY : external/imgui/backends/imgui_impl_opengl3.o
+
+# target to build an object file
+external/imgui/backends/imgui_impl_opengl3.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o
+.PHONY : external/imgui/backends/imgui_impl_opengl3.cpp.o
+
+external/imgui/backends/imgui_impl_opengl3.i: external/imgui/backends/imgui_impl_opengl3.cpp.i
+.PHONY : external/imgui/backends/imgui_impl_opengl3.i
+
+# target to preprocess a source file
+external/imgui/backends/imgui_impl_opengl3.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_opengl3.cpp.i
+.PHONY : external/imgui/backends/imgui_impl_opengl3.cpp.i
+
+external/imgui/backends/imgui_impl_opengl3.s: external/imgui/backends/imgui_impl_opengl3.cpp.s
+.PHONY : external/imgui/backends/imgui_impl_opengl3.s
+
+# target to generate assembly for a file
+external/imgui/backends/imgui_impl_opengl3.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_opengl3.cpp.s
+.PHONY : external/imgui/backends/imgui_impl_opengl3.cpp.s
+
+external/imgui/backends/imgui_impl_sdl2.o: external/imgui/backends/imgui_impl_sdl2.cpp.o
+.PHONY : external/imgui/backends/imgui_impl_sdl2.o
+
+# target to build an object file
+external/imgui/backends/imgui_impl_sdl2.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_sdl2.cpp.o
+.PHONY : external/imgui/backends/imgui_impl_sdl2.cpp.o
+
+external/imgui/backends/imgui_impl_sdl2.i: external/imgui/backends/imgui_impl_sdl2.cpp.i
+.PHONY : external/imgui/backends/imgui_impl_sdl2.i
+
+# target to preprocess a source file
+external/imgui/backends/imgui_impl_sdl2.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_sdl2.cpp.i
+.PHONY : external/imgui/backends/imgui_impl_sdl2.cpp.i
+
+external/imgui/backends/imgui_impl_sdl2.s: external/imgui/backends/imgui_impl_sdl2.cpp.s
+.PHONY : external/imgui/backends/imgui_impl_sdl2.s
+
+# target to generate assembly for a file
+external/imgui/backends/imgui_impl_sdl2.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_sdl2.cpp.s
+.PHONY : external/imgui/backends/imgui_impl_sdl2.cpp.s
+
+external/imgui/imgui.o: external/imgui/imgui.cpp.o
+.PHONY : external/imgui/imgui.o
+
+# target to build an object file
+external/imgui/imgui.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui.cpp.o
+.PHONY : external/imgui/imgui.cpp.o
+
+external/imgui/imgui.i: external/imgui/imgui.cpp.i
+.PHONY : external/imgui/imgui.i
+
+# target to preprocess a source file
+external/imgui/imgui.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui.cpp.i
+.PHONY : external/imgui/imgui.cpp.i
+
+external/imgui/imgui.s: external/imgui/imgui.cpp.s
+.PHONY : external/imgui/imgui.s
+
+# target to generate assembly for a file
+external/imgui/imgui.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui.cpp.s
+.PHONY : external/imgui/imgui.cpp.s
+
+external/imgui/imgui_draw.o: external/imgui/imgui_draw.cpp.o
+.PHONY : external/imgui/imgui_draw.o
+
+# target to build an object file
+external/imgui/imgui_draw.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui_draw.cpp.o
+.PHONY : external/imgui/imgui_draw.cpp.o
+
+external/imgui/imgui_draw.i: external/imgui/imgui_draw.cpp.i
+.PHONY : external/imgui/imgui_draw.i
+
+# target to preprocess a source file
+external/imgui/imgui_draw.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui_draw.cpp.i
+.PHONY : external/imgui/imgui_draw.cpp.i
+
+external/imgui/imgui_draw.s: external/imgui/imgui_draw.cpp.s
+.PHONY : external/imgui/imgui_draw.s
+
+# target to generate assembly for a file
+external/imgui/imgui_draw.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui_draw.cpp.s
+.PHONY : external/imgui/imgui_draw.cpp.s
+
+external/imgui/imgui_tables.o: external/imgui/imgui_tables.cpp.o
+.PHONY : external/imgui/imgui_tables.o
+
+# target to build an object file
+external/imgui/imgui_tables.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui_tables.cpp.o
+.PHONY : external/imgui/imgui_tables.cpp.o
+
+external/imgui/imgui_tables.i: external/imgui/imgui_tables.cpp.i
+.PHONY : external/imgui/imgui_tables.i
+
+# target to preprocess a source file
+external/imgui/imgui_tables.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui_tables.cpp.i
+.PHONY : external/imgui/imgui_tables.cpp.i
+
+external/imgui/imgui_tables.s: external/imgui/imgui_tables.cpp.s
+.PHONY : external/imgui/imgui_tables.s
+
+# target to generate assembly for a file
+external/imgui/imgui_tables.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui_tables.cpp.s
+.PHONY : external/imgui/imgui_tables.cpp.s
+
+external/imgui/imgui_widgets.o: external/imgui/imgui_widgets.cpp.o
+.PHONY : external/imgui/imgui_widgets.o
+
+# target to build an object file
+external/imgui/imgui_widgets.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui_widgets.cpp.o
+.PHONY : external/imgui/imgui_widgets.cpp.o
+
+external/imgui/imgui_widgets.i: external/imgui/imgui_widgets.cpp.i
+.PHONY : external/imgui/imgui_widgets.i
+
+# target to preprocess a source file
+external/imgui/imgui_widgets.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui_widgets.cpp.i
+.PHONY : external/imgui/imgui_widgets.cpp.i
+
+external/imgui/imgui_widgets.s: external/imgui/imgui_widgets.cpp.s
+.PHONY : external/imgui/imgui_widgets.s
+
+# target to generate assembly for a file
+external/imgui/imgui_widgets.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/imgui/imgui_widgets.cpp.s
+.PHONY : external/imgui/imgui_widgets.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -179,7 +347,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -187,32 +355,128 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-midiHandler.o: midiHandler.cpp.o
-.PHONY : midiHandler.o
+midiInputHandler.o: midiInputHandler.cpp.o
+.PHONY : midiInputHandler.o
 
 # target to build an object file
-midiHandler.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/midiHandler.cpp.o
-.PHONY : midiHandler.cpp.o
+midiInputHandler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/midiInputHandler.cpp.o
+.PHONY : midiInputHandler.cpp.o
 
-midiHandler.i: midiHandler.cpp.i
-.PHONY : midiHandler.i
+midiInputHandler.i: midiInputHandler.cpp.i
+.PHONY : midiInputHandler.i
 
 # target to preprocess a source file
-midiHandler.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/midiHandler.cpp.i
-.PHONY : midiHandler.cpp.i
+midiInputHandler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/midiInputHandler.cpp.i
+.PHONY : midiInputHandler.cpp.i
 
-midiHandler.s: midiHandler.cpp.s
-.PHONY : midiHandler.s
+midiInputHandler.s: midiInputHandler.cpp.s
+.PHONY : midiInputHandler.s
 
 # target to generate assembly for a file
-midiHandler.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/midiHandler.cpp.s
-.PHONY : midiHandler.cpp.s
+midiInputHandler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/midiInputHandler.cpp.s
+.PHONY : midiInputHandler.cpp.s
+
+midiOutputHandler.o: midiOutputHandler.cpp.o
+.PHONY : midiOutputHandler.o
+
+# target to build an object file
+midiOutputHandler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/midiOutputHandler.cpp.o
+.PHONY : midiOutputHandler.cpp.o
+
+midiOutputHandler.i: midiOutputHandler.cpp.i
+.PHONY : midiOutputHandler.i
+
+# target to preprocess a source file
+midiOutputHandler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/midiOutputHandler.cpp.i
+.PHONY : midiOutputHandler.cpp.i
+
+midiOutputHandler.s: midiOutputHandler.cpp.s
+.PHONY : midiOutputHandler.s
+
+# target to generate assembly for a file
+midiOutputHandler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/midiOutputHandler.cpp.s
+.PHONY : midiOutputHandler.cpp.s
+
+receiveScheduler.o: receiveScheduler.cpp.o
+.PHONY : receiveScheduler.o
+
+# target to build an object file
+receiveScheduler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/receiveScheduler.cpp.o
+.PHONY : receiveScheduler.cpp.o
+
+receiveScheduler.i: receiveScheduler.cpp.i
+.PHONY : receiveScheduler.i
+
+# target to preprocess a source file
+receiveScheduler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/receiveScheduler.cpp.i
+.PHONY : receiveScheduler.cpp.i
+
+receiveScheduler.s: receiveScheduler.cpp.s
+.PHONY : receiveScheduler.s
+
+# target to generate assembly for a file
+receiveScheduler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/receiveScheduler.cpp.s
+.PHONY : receiveScheduler.cpp.s
+
+timeSync.o: timeSync.cpp.o
+.PHONY : timeSync.o
+
+# target to build an object file
+timeSync.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/timeSync.cpp.o
+.PHONY : timeSync.cpp.o
+
+timeSync.i: timeSync.cpp.i
+.PHONY : timeSync.i
+
+# target to preprocess a source file
+timeSync.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/timeSync.cpp.i
+.PHONY : timeSync.cpp.i
+
+timeSync.s: timeSync.cpp.s
+.PHONY : timeSync.s
+
+# target to generate assembly for a file
+timeSync.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/timeSync.cpp.s
+.PHONY : timeSync.cpp.s
+
+transportClient.o: transportClient.cpp.o
+.PHONY : transportClient.o
+
+# target to build an object file
+transportClient.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/transportClient.cpp.o
+.PHONY : transportClient.cpp.o
+
+transportClient.i: transportClient.cpp.i
+.PHONY : transportClient.i
+
+# target to preprocess a source file
+transportClient.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/transportClient.cpp.i
+.PHONY : transportClient.cpp.i
+
+transportClient.s: transportClient.cpp.s
+.PHONY : transportClient.s
+
+# target to generate assembly for a file
+transportClient.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TCP_MIDI_Client.dir/build.make CMakeFiles/TCP_MIDI_Client.dir/transportClient.cpp.s
+.PHONY : transportClient.cpp.s
 
 # Help Target
 help:
@@ -222,17 +486,50 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... TcpConnection"
-	@echo "... client"
-	@echo "... TcpConnection.o"
-	@echo "... TcpConnection.i"
-	@echo "... TcpConnection.s"
+	@echo "... TCP_MIDI_Client"
+	@echo "... imgui"
+	@echo "... AppController.o"
+	@echo "... AppController.i"
+	@echo "... AppController.s"
+	@echo "... GuiApp.o"
+	@echo "... GuiApp.i"
+	@echo "... GuiApp.s"
+	@echo "... external/imgui/backends/imgui_impl_opengl3.o"
+	@echo "... external/imgui/backends/imgui_impl_opengl3.i"
+	@echo "... external/imgui/backends/imgui_impl_opengl3.s"
+	@echo "... external/imgui/backends/imgui_impl_sdl2.o"
+	@echo "... external/imgui/backends/imgui_impl_sdl2.i"
+	@echo "... external/imgui/backends/imgui_impl_sdl2.s"
+	@echo "... external/imgui/imgui.o"
+	@echo "... external/imgui/imgui.i"
+	@echo "... external/imgui/imgui.s"
+	@echo "... external/imgui/imgui_draw.o"
+	@echo "... external/imgui/imgui_draw.i"
+	@echo "... external/imgui/imgui_draw.s"
+	@echo "... external/imgui/imgui_tables.o"
+	@echo "... external/imgui/imgui_tables.i"
+	@echo "... external/imgui/imgui_tables.s"
+	@echo "... external/imgui/imgui_widgets.o"
+	@echo "... external/imgui/imgui_widgets.i"
+	@echo "... external/imgui/imgui_widgets.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... midiHandler.o"
-	@echo "... midiHandler.i"
-	@echo "... midiHandler.s"
+	@echo "... midiInputHandler.o"
+	@echo "... midiInputHandler.i"
+	@echo "... midiInputHandler.s"
+	@echo "... midiOutputHandler.o"
+	@echo "... midiOutputHandler.i"
+	@echo "... midiOutputHandler.s"
+	@echo "... receiveScheduler.o"
+	@echo "... receiveScheduler.i"
+	@echo "... receiveScheduler.s"
+	@echo "... timeSync.o"
+	@echo "... timeSync.i"
+	@echo "... timeSync.s"
+	@echo "... transportClient.o"
+	@echo "... transportClient.i"
+	@echo "... transportClient.s"
 .PHONY : help
 
 

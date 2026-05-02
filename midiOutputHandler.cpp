@@ -1,5 +1,12 @@
 #include "midiOutputHandler.h"
 
+/*
+MidiOutputHandler is intentionally narrow: it owns libremidi::midi_out, 
+tracks whether the output port is open, 
+and exposes a simple sendMessage() method for the scheduler callback to use. 
+That keeps playout device I/O out of both the transport layer and the timing layer.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>

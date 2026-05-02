@@ -1,3 +1,10 @@
+/*
+MidiOutputHandler is intentionally narrow: it owns libremidi::midi_in, 
+tracks whether the input port is open, 
+and exposes a Inpu callback for the scheduler to use. 
+That keeps playout device I/O out of both the transport layer and the timing layer.
+*/
+
 #include "midiInputHandler.h"
 
 #include <iostream>

@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-//#include <SDL2/SDL.h>
-
 typedef void* SDL_GLContext;
 struct SDL_Window;
 

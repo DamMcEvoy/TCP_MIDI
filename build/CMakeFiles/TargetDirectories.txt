@@ -1,4 +1,0 @@
-/Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles/imgui.dir
-/Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles/TCP_MIDI_Client.dir
-/Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles/edit_cache.dir
-/Users/damienmcevoy/PhD/Code/TCP_MIDI/build/CMakeFiles/rebuild_cache.dir

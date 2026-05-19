@@ -1,6 +1,8 @@
 #ifndef APP_CONTROLLER_H
 #define APP_CONTROLLER_H
 
+#pragma once
+
 #include <cstddef>
 #include <memory>
 #include <string>
@@ -12,6 +14,8 @@
 #include "receiveScheduler.h"
 #include "midiInputHandler.h"
 #include "midiOutputHandler.h"
+
+#include "clockState.h" 
 
 class AppController {
 public:
@@ -39,12 +43,13 @@ public:
     void setSentMidiLogCallback(std::function<void(const std::string&)> callback);
     void setReceivedMidiLogCallback(std::function<void(const std::string&)> callback);
     void clearGuiLogCallbacks();
-    
 
 private:
     bool openSelectedPorts();
     void closeSelectedPorts();
     void wireCallbacks();
+    void handleClockMessage(const MidiInputHandler::ClockMessage& clockMessage);
+    static const char* clockMessageTypeToString(MidiInputHandler::ClockMessageType type);
 
     std::string serverIp_;
     int serverPort_;
@@ -57,6 +62,8 @@ private:
     std::unique_ptr<libremidi::observer> observer_;
     std::function<void(const std::string&)> sentMidiLogCallback_;
     std::function<void(const std::string&)> receivedMidiLogCallback_;
+
+    std::unique_ptr<ClockState> clockState_;
 
     libremidi::input_port selectedInputPort_{};
     libremidi::output_port selectedOutputPort_{};

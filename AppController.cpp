@@ -1,6 +1,8 @@
 #include "AppController.h"
+#include "clockState.h"
 
 #include <iostream>
+#include <sstream>
 #include <utility>
 
 AppController::AppController(const std::string& serverIp, int serverPort)
@@ -18,7 +20,8 @@ bool AppController::initialize() {
 
     transportClient_ = std::make_unique<TransportClient>(serverIp_, serverPort_);
     timeSync_ = std::make_unique<TimeSync>();
-    receiveScheduler_ = std::make_unique<ReceiveScheduler>(*timeSync_);
+    clockState_ = std::make_unique<ClockState>();
+    receiveScheduler_ = std::make_unique<ReceiveScheduler>(*timeSync_, *clockState_);
     midiInputHandler_ = std::make_unique<MidiInputHandler>();
     midiOutputHandler_ = std::make_unique<MidiOutputHandler>();
 
@@ -217,6 +220,10 @@ void AppController::wireCallbacks() {
         }
     });
 
+    midiInputHandler_->setClockCallback([this](const MidiInputHandler::ClockMessage& clockMessage) {
+        handleClockMessage(clockMessage);
+    });
+
     midiInputHandler_->setMessageReceivedCallback([this](const std::string& message) {
         if (receivedMidiLogCallback_) {
             receivedMidiLogCallback_(message);
@@ -282,6 +289,10 @@ bool AppController::startStreaming() {
 }
 
 void AppController::stopStreaming() {
+    if (transportClient_) {
+        transportClient_->setReceiveCallback(nullptr);
+    }
+
     if (receiveScheduler_) {
         receiveScheduler_->stop();
         receiveScheduler_->reset();
@@ -290,14 +301,16 @@ void AppController::stopStreaming() {
 
     if (midiInputHandler_) {
         midiInputHandler_->setInputCallback(nullptr);
+        midiInputHandler_->setClockCallback(nullptr);
+        midiInputHandler_->setMessageReceivedCallback(nullptr);
     }
 
     if (midiOutputHandler_) {
         midiOutputHandler_->setMessageSentCallback(nullptr);
     }
 
-    if (midiInputHandler_) {
-        midiInputHandler_->setMessageReceivedCallback(nullptr);
+    if (clockState_) {
+        clockState_->reset();
     }
 
     closeSelectedPorts();
@@ -317,6 +330,53 @@ void AppController::setReceivedMidiLogCallback(std::function<void(const std::str
     receivedMidiLogCallback_ = std::move(callback);
 }
 
+void AppController::handleClockMessage(const MidiInputHandler::ClockMessage& clockMessage) {
+    if (clockState_) {
+        clockState_->handleClockMessage(clockMessage);
+    }
+
+    std::ostringstream oss;
+    oss << "[Clock] " << clockMessageTypeToString(clockMessage.type);
+
+    if (clockMessage.songPosition >= 0) {
+        oss << " spp=" << clockMessage.songPosition;
+    }
+
+    if (clockMessage.songSelect >= 0) {
+        oss << " song=" << clockMessage.songSelect;
+    }
+
+    if (clockState_) {
+        const auto snap = clockState_->snapshot();
+        oss << " running=" << (snap.running ? "yes" : "no")
+            << " pulses=" << snap.pulseCount
+            << " qn=" << snap.quarterNoteCount
+            << " ppq=" << snap.transportRatePpq;
+        if (snap.hasSongPosition) {
+            oss << " sppState=" << snap.songPositionBeats;
+        }
+    }
+
+    if (receivedMidiLogCallback_) {
+        receivedMidiLogCallback_(oss.str());
+    }
+}
+
+const char* AppController::clockMessageTypeToString(MidiInputHandler::ClockMessageType type) {
+    switch (type) {
+        case MidiInputHandler::ClockMessageType::TimingClock: return "TimingClock";
+        case MidiInputHandler::ClockMessageType::Start: return "Start";
+        case MidiInputHandler::ClockMessageType::Continue: return "Continue";
+        case MidiInputHandler::ClockMessageType::Stop: return "Stop";
+        case MidiInputHandler::ClockMessageType::SongPositionPointer: return "SongPositionPointer";
+        case MidiInputHandler::ClockMessageType::SongSelect: return "SongSelect";
+        case MidiInputHandler::ClockMessageType::TuneRequest: return "TuneRequest";
+        case MidiInputHandler::ClockMessageType::ActiveSensing: return "ActiveSensing";
+        case MidiInputHandler::ClockMessageType::SystemReset: return "SystemReset";
+        default: return "Unknown";
+    }
+}
+
 void AppController::shutdown() {
     if (!initialized_) {
         return;
@@ -330,6 +390,7 @@ void AppController::shutdown() {
     }
 
     observer_.reset();
+    clockState_.reset();
     midiInputHandler_.reset();
     midiOutputHandler_.reset();
     receiveScheduler_.reset();

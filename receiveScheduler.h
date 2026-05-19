@@ -1,9 +1,3 @@
-/*
-ReceiveScheduler accepts a TimedMidiEvent, asks TimeSync for its local playAt time, 
-pushes a ScheduledMidiMessage into a priority queue, and releases events in time order through a registered output callback. 
-The receive side is cleanly split into timestamp mapping in TimeSync and playout orchestration in ReceiveScheduler
-*/
-
 #ifndef RECEIVE_SCHEDULER_H
 #define RECEIVE_SCHEDULER_H
 
@@ -14,11 +8,11 @@ The receive side is cleanly split into timestamp mapping in TimeSync and playout
 #include <functional>
 #include <mutex>
 #include <queue>
-#include <vector>
 #include <thread>
+#include <vector>
 
+#include "clockState.h"
 #include "timeSync.h"
-
 #include "TimedMidiEvent.h"
 
 struct ScheduledMidiMessage {
@@ -26,6 +20,10 @@ struct ScheduledMidiMessage {
     uint64_t serverTimestampNs = 0;
     std::chrono::steady_clock::time_point playAt;
     std::vector<unsigned char> midiMessage;
+    bool runningAtEnqueue = false;
+    bool hasSongPositionAtEnqueue = false;
+    uint64_t pulseCountAtEnqueue = 0;
+    int songPositionAtEnqueue = -1;
 };
 
 struct ScheduledMidiCompare {
@@ -41,7 +39,7 @@ class ReceiveScheduler {
 public:
     using OutputCallback = std::function<void(const std::vector<unsigned char>&)>;
 
-    explicit ReceiveScheduler(TimeSync& timeSync);
+    ReceiveScheduler(TimeSync& timeSync, ClockState& clockState);
     ~ReceiveScheduler();
 
     void setOutputCallback(OutputCallback callback);
@@ -52,9 +50,13 @@ public:
     std::size_t queueDepth() const;
 
 private:
+    bool shouldFlushForTransportJump(const ClockState::Snapshot& snap) const;
+    bool shouldReleaseEvent(const ScheduledMidiMessage& msg, const ClockState::Snapshot& snap) const;
+    void flushQueuedEventsLocked(const char* reason);
     void workerLoop();
 
     TimeSync& timeSync_;
+    ClockState& clockState_;
     OutputCallback outputCallback_;
 
     mutable std::mutex mutex_;
@@ -65,6 +67,10 @@ private:
 
     std::atomic<bool> running_;
     std::thread workerThread_;
+
+    bool lastRunningState_ = false;
+    bool haveLastSongPosition_ = false;
+    int lastSongPosition_ = -1;
 };
 
 #endif // RECEIVE_SCHEDULER_H

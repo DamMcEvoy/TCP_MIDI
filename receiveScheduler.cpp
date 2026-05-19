@@ -9,8 +9,9 @@ namespace {
 constexpr int64_t kDefaultJitterBufferNs = 80'000'000; // 80 ms
 }
 
-ReceiveScheduler::ReceiveScheduler(TimeSync& timeSync)
+ReceiveScheduler::ReceiveScheduler(TimeSync& timeSync, ClockState& clockState)
     : timeSync_(timeSync),
+      clockState_(clockState),
       outputCallback_(nullptr),
       running_(false) {}
 
@@ -47,16 +48,55 @@ void ReceiveScheduler::stop() {
 
 void ReceiveScheduler::reset() {
     std::lock_guard lock(mutex_);
+    flushQueuedEventsLocked("reset");
+    timeSync_.reset();
+    lastRunningState_ = false;
+    haveLastSongPosition_ = false;
+    lastSongPosition_ = 0;
+    cv_.notify_all();
+}
+
+bool ReceiveScheduler::shouldFlushForTransportJump(const ClockState::Snapshot& snap) const {
+    if (snap.running != lastRunningState_) {
+        return true;
+    }
+
+    if (snap.hasSongPosition) {
+        if (!haveLastSongPosition_) {
+            return true;
+        }
+        if (snap.songPositionBeats != lastSongPosition_) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ReceiveScheduler::shouldReleaseEvent(const ScheduledMidiMessage& msg,
+                                          const ClockState::Snapshot& snap) const {
+    if (snap.hasSongPosition && msg.hasSongPositionAtEnqueue) {
+        if (snap.songPositionBeats != msg.songPositionAtEnqueue &&
+            snap.pulseCount < msg.pulseCountAtEnqueue) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void ReceiveScheduler::flushQueuedEventsLocked(const char* reason) {
+    if (!queue_.empty()) {
+        std::cerr << "[ReceiveScheduler] Flushing queue. reason=" << reason
+                  << " flushed=" << queue_.size() << std::endl;
+    }
+
     while (!queue_.empty()) {
         queue_.pop();
     }
-    timeSync_.reset();
-    cv_.notify_all();
 }
 
 void ReceiveScheduler::enqueue(const TimedMidiEvent& event) {
     if ((event.flags & 0x0002) != 0) {
-        // Parse JR clock payload: type(2) + drift_ppm(4) + server_clock_ns(8)
         if (event.midiMessage.size() >= 14) {
             const int32_t driftPpm =
                 (static_cast<int32_t>(event.midiMessage[2]) << 24) |
@@ -70,16 +110,38 @@ void ReceiveScheduler::enqueue(const TimedMidiEvent& event) {
             }
 
             timeSync_.updateJrClock(serverClockNs, driftPpm);
-
-            //std::cerr << "[ReceiveScheduler] JR Clock frame applied seq=" << event.sequence
-            //          << " serverClockNs=" << serverClockNs
-            //          << " driftPpm=" << driftPpm << std::endl;
         } else {
             std::cerr << "[ReceiveScheduler] JR Clock frame too short. bytes="
                       << event.midiMessage.size() << std::endl;
         }
         return;
     }
+
+    const auto snap = clockState_.snapshot();
+
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+
+        if (shouldFlushForTransportJump(snap)) {
+            if (!snap.running) {
+                flushQueuedEventsLocked("transport-stop");
+            } else if (snap.hasSongPosition && haveLastSongPosition_ && snap.songPositionBeats != lastSongPosition_) {
+                flushQueuedEventsLocked("song-position-change");
+            }
+        }
+
+        lastRunningState_ = snap.running;
+        if (snap.hasSongPosition) {
+            haveLastSongPosition_ = true;
+            lastSongPosition_ = snap.songPositionBeats;
+        }
+    }
+
+/*    if (!snap.running) {
+        std::cerr << "[ReceiveScheduler] Dropping seq=" << event.sequence
+                  << " because transport is not running." << std::endl;
+        return;
+    }*/
 
     std::chrono::steady_clock::time_point playAt;
     int64_t jrOffsetNs = 0;
@@ -101,12 +163,18 @@ void ReceiveScheduler::enqueue(const TimedMidiEvent& event) {
             event.sequence,
             event.serverTimestampNs,
             playAt,
-            event.midiMessage
+            event.midiMessage,
+            snap.running,
+            snap.hasSongPosition,
+            snap.pulseCount,
+            snap.songPositionBeats
         });
 
         std::cerr << "[ReceiveScheduler] Enqueued seq=" << event.sequence
                   << " jrOffsetNs=" << jrOffsetNs
                   << " hasJrClock=" << (timeSync_.hasJrClock() ? "yes" : "no")
+                  << " transportRunning=" << (snap.running ? "yes" : "no")
+                  << " pulseCount=" << snap.pulseCount
                   << " queueDepth=" << queue_.size() << std::endl;
     }
 
@@ -150,9 +218,19 @@ void ReceiveScheduler::workerLoop() {
 
             queue_.pop();
             auto callback = outputCallback_;
+            const auto snap = clockState_.snapshot();
+
+            if (!shouldReleaseEvent(next, snap)) {
+                std::cerr << "[ReceiveScheduler] Dropping seq=" << next.sequence
+                          << " at release. transportRunning=" << (snap.running ? "yes" : "no")
+                          << " pulseCount=" << snap.pulseCount
+                          << " remainingQueueDepth=" << queue_.size() << std::endl;
+                continue;
+            }
 
             std::cerr << "[ReceiveScheduler] Releasing seq=" << next.sequence
-                      << " remainingQueueDepth=" << queue_.size() << std::endl;
+                      << " remainingQueueDepth=" << queue_.size()
+                      << " pulseCount=" << snap.pulseCount << std::endl;
 
             lock.unlock();
 

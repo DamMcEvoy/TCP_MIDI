@@ -20,6 +20,28 @@ public:
     using InputCallback = std::function<void(const std::vector<unsigned char>&)>;
     using MessageReceivedCallback = std::function<void(const std::string&)>;
 
+    enum class ClockMessageType {
+        TimingClock,
+        Start,
+        Continue,
+        Stop,
+        SongPositionPointer,
+        SongSelect,
+        TuneRequest,
+        ActiveSensing,
+        SystemReset,
+        Unknown
+    };
+
+    struct ClockMessage {
+        ClockMessageType type;
+        std::vector<unsigned char> bytes;
+        int songPosition = -1;
+        int songSelect = -1;
+    };
+
+    using ClockCallback = std::function<void(const ClockMessage&)>;
+
     MidiInputHandler();
     ~MidiInputHandler();
 
@@ -29,14 +51,19 @@ public:
 
     void setInputCallback(InputCallback callback);
     void setMessageReceivedCallback(MessageReceivedCallback callback);
+    void setClockCallback(ClockCallback callback);
 
 private:
     bool open_;
     InputCallback inputCallback_;
     MessageReceivedCallback messageReceivedCallback_;
+    ClockCallback clockCallback_;
     std::unique_ptr<libremidi::midi_in> midiIn_;
     libremidi::input_configuration config_;
 
+    static bool isClockRelatedMessage(const std::vector<unsigned char>& midiMessage);
+    static ClockMessage parseClockMessage(const std::vector<unsigned char>& midiMessage);
+    static ClockMessageType classifyClockMessage(unsigned char status);
     std::string formatMidiMessage(const std::vector<unsigned char>& midiMessage) const;
 };
 

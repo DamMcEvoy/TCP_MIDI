@@ -1,6 +1,5 @@
 #include "AppController.h"
 #include "clockState.h"
-
 #include <iostream>
 #include <sstream>
 #include <utility>
@@ -237,6 +236,10 @@ void AppController::wireCallbacks() {
     });
 
     transportClient_->setReceiveCallback([this](const TimedMidiEvent& event) {
+        if (timeSync_ && event.hasJrClock) {
+            timeSync_ ->updateJrClock(event.jrServerClockNs, event.jrFreqPpm);
+        }
+        
         if (receiveScheduler_) {
             receiveScheduler_->enqueue(event);
         }

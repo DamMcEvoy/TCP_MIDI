@@ -10,7 +10,6 @@
 #include <queue>
 #include <thread>
 #include <vector>
-
 #include "clockState.h"
 #include "timeSync.h"
 #include "TimedMidiEvent.h"
@@ -18,8 +17,10 @@
 struct ScheduledMidiMessage {
     uint32_t sequence = 0;
     uint64_t serverTimestampNs = 0;
-    std::chrono::steady_clock::time_point playAt;
-    std::vector<unsigned char> midiMessage;
+    std::chrono::steady_clock::time_point arrivalLocalTime{};
+    std::chrono::steady_clock::time_point playAt{};
+    int64_t estimatedWaitNs = 0;
+    std::vector<uint8_t> midiMessage;
     bool runningAtEnqueue = false;
     bool hasSongPositionAtEnqueue = false;
     uint64_t pulseCountAtEnqueue = 0;
@@ -37,7 +38,7 @@ struct ScheduledMidiCompare {
 
 class ReceiveScheduler {
 public:
-    using OutputCallback = std::function<void(const std::vector<unsigned char>&)>;
+    using OutputCallback = std::function<void(const std::vector<uint8_t>&)>;
 
     ReceiveScheduler(TimeSync& timeSync, ClockState& clockState);
     ~ReceiveScheduler();

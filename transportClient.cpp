@@ -9,12 +9,15 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <chrono>
+#include <cstdint>
 
 namespace {
 constexpr uint32_t kMidiFrameMagic = 0x4D494449;
 constexpr uint16_t kMidiFrameVersion = 1;
 constexpr uint16_t kMidiFrameHeaderSize = 24;
 constexpr uint32_t kMaxFrameSize = 4096;
+constexpr uint16_t kMidiFrameFlagsJrClock = 0x0002;
 }
 
 TransportClient::TransportClient(const std::string& serverIp, int serverPort)
@@ -157,10 +160,6 @@ void TransportClient::disconnect() {
     bool wasConnected = connected_.exchange(false);
     recvRunning_ = false;
 
-    if (socketFd_ >= 0) {
-        shutdown(socketFd_, SHUT_RDWR);
-    }
-
     if (receiveThread_.joinable()) {
         receiveThread_.join();
     }
@@ -174,6 +173,7 @@ void TransportClient::disconnect() {
     }
 
     if (socketFd_ >= 0) {
+        shutdown(socketFd_, SHUT_RDWR);
         close(socketFd_);
         socketFd_ = -1;
     }
@@ -250,6 +250,7 @@ void TransportClient::receiveLoop() {
         // 2. Read full frame
         std::vector<uint8_t> frame(totalLength);
         if (!readExact(frame.data(), frame.size())) break;
+        const auto arrivalLocalTime = std::chrono::steady_clock::now();
 
         // 3. Parse header
         const uint32_t magic = readBe32(frame.data());
@@ -284,12 +285,28 @@ void TransportClient::receiveLoop() {
         event.sequence = sequence;
         event.serverTimestampNs = serverTimestampNs;
         event.flags = flags;
+        event.arrivalLocalTime = arrivalLocalTime;
         event.midiMessage.assign(frame.begin() + headerSize, frame.end());
 
-        //std::cerr << "[TransportClient] Received frame seq=" << event.sequence
-        //          << " ts=" << event.serverTimestampNs << " bytes=" << event.midiMessage.size() << std::endl;
+        if ((flags & kMidiFrameFlagsJrClock) != 0 && event.midiMessage.size() >= 14){
+            event.hasJrClock = true;
 
-        
+            event.jrFreqPpm = 
+                (static_cast<int32_t>(event.midiMessage[2]) << 24) |
+                (static_cast<int32_t>(event.midiMessage[3]) << 16) |
+                (static_cast<int32_t>(event.midiMessage[4]) << 8)  |
+                static_cast<int32_t>(event.midiMessage[5]);
+
+            uint64_t jrClockNs = 0;
+            for (int i = 6; i < 14; ++i){
+                jrClockNs = (jrClockNs << 8) | event.midiMessage[i];
+            }
+            event.jrServerClockNs = jrClockNs;
+        }
+
+
+
+
         ReceiveCallback callback;
         {
             std::lock_guard<std::mutex> lock(callbackMutex_);

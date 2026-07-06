@@ -1,5 +1,4 @@
 #include "receiveScheduler.h"
-
 #include <chrono>
 #include <cstdint>
 #include <iostream>
@@ -96,23 +95,9 @@ void ReceiveScheduler::flushQueuedEventsLocked(const char* reason) {
 }
 
 void ReceiveScheduler::enqueue(const TimedMidiEvent& event) {
-    if ((event.flags & 0x0002) != 0) {
-        if (event.midiMessage.size() >= 14) {
-            const int32_t driftPpm =
-                (static_cast<int32_t>(event.midiMessage[2]) << 24) |
-                (static_cast<int32_t>(event.midiMessage[3]) << 16) |
-                (static_cast<int32_t>(event.midiMessage[4]) << 8)  |
-                 static_cast<int32_t>(event.midiMessage[5]);
-
-            uint64_t serverClockNs = 0;
-            for (int i = 6; i < 14; ++i) {
-                serverClockNs = (serverClockNs << 8) | event.midiMessage[i];
-            }
-
-            timeSync_.updateJrClock(serverClockNs, driftPpm);
-        } else {
-            std::cerr << "[ReceiveScheduler] JR Clock frame too short. bytes="
-                      << event.midiMessage.size() << std::endl;
+    if (event.hasJrClock) {
+        if (event.midiMessage.empty()) {
+            std::cerr << "[ReceiveScheduler] Received JR timing event with no MIDI payload." << std::endl;
         }
         return;
     }
@@ -137,32 +122,65 @@ void ReceiveScheduler::enqueue(const TimedMidiEvent& event) {
         }
     }
 
-/*    if (!snap.running) {
-        std::cerr << "[ReceiveScheduler] Dropping seq=" << event.sequence
-                  << " because transport is not running." << std::endl;
-        return;
-    }*/
-
     std::chrono::steady_clock::time_point playAt;
     int64_t jrOffsetNs = 0;
 
-    if (timeSync_.hasJrClock()) {
-        const uint64_t extrapolatedJrClockNs = timeSync_.extrapolate_ns();
-        jrOffsetNs = static_cast<int64_t>(event.serverTimestampNs)
-                   - static_cast<int64_t>(extrapolatedJrClockNs);
+    constexpr auto kMaxFreshJrAge = std::chrono::milliseconds(250);
+    const auto schedulingMode = 
+        timeSync_.schedulingMode(
+            std::chrono::duration_cast<std::chrono::nanoseconds>(kMaxFreshJrAge));
+    const auto jrAge = timeSync_.jrSampleAge();
+
+    if (timeSync_.hasJrClock() && 
+        schedulingMode == TimeSync::SchedulingMode::Anchor) {
+        std::cerr << "[ReceiveScheduler] JR clock stale. Falling back to anchor scheduling. "
+            << "jrSampleAgeNs=" << jrAge.count()
+            << " maxFreshJrAgeNs="
+            << std::chrono::duration_cast<std::chrono::nanoseconds>(kMaxFreshJrAge).count()
+            << std::endl;
+    }
+
+    const char* schedulingModeText = "none";
+
+    switch (schedulingMode) {
+    case TimeSync::SchedulingMode::FreshJr: {
+        schedulingModeText = "fresh-jr";
+        const uint64_t extrapolatedJrClocks = timeSync_.extrapolate_ns();
+        jrOffsetNs = static_cast<int64_t>(event.serverTimestampNs) - static_cast<int64_t>(extrapolatedJrClocks);
 
         playAt = timeSync_.extrapolate_ns(jrOffsetNs + kDefaultJitterBufferNs);
-    } else {
-        playAt = timeSync_.computePlayTime(
-            event.serverTimestampNs + static_cast<uint64_t>(kDefaultJitterBufferNs));
+
+        break;
     }
+
+    case TimeSync::SchedulingMode::Anchor:
+    schedulingModeText = "anchor";
+    playAt = timeSync_.computePlayTime(
+        event.serverTimestampNs + static_cast<uint64_t>(kDefaultJitterBufferNs));
+
+        break;
+
+    case TimeSync::SchedulingMode::None:
+        schedulingModeText = "none";
+        playAt = std::chrono::steady_clock::now() + std::chrono::nanoseconds(kDefaultJitterBufferNs);
+        std::cerr << "[ReceiveScheduler] No valid timing model available. " 
+        << "Using immediate local fallback scheduling. " 
+        << std::endl;
+
+        break;
+    }
+
+    const auto estimatedWaitNs = 
+        std::chrono::duration_cast<std::chrono::nanoseconds>(playAt - event.arrivalLocalTime).count();
 
     {
         std::lock_guard<std::mutex> lock(mutex_);
         queue_.push(ScheduledMidiMessage{
             event.sequence,
             event.serverTimestampNs,
+            event.arrivalLocalTime,
             playAt,
+            estimatedWaitNs,
             event.midiMessage,
             snap.running,
             snap.hasSongPosition,
@@ -171,11 +189,14 @@ void ReceiveScheduler::enqueue(const TimedMidiEvent& event) {
         });
 
         std::cerr << "[ReceiveScheduler] Enqueued seq=" << event.sequence
+                  << " schedulingMode=" << schedulingModeText
                   << " jrOffsetNs=" << jrOffsetNs
-                  << " hasJrClock=" << (timeSync_.hasJrClock() ? "yes" : "no")
+                  << " estimatedWaitNs=" << estimatedWaitNs
+                  << " jrSampleAgeNs=" << jrAge.count()
                   << " transportRunning=" << (snap.running ? "yes" : "no")
                   << " pulseCount=" << snap.pulseCount
-                  << " queueDepth=" << queue_.size() << std::endl;
+                  << " queueDepth=" << queue_.size() 
+                  << std::endl;
     }
 
     cv_.notify_one();

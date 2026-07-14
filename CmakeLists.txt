@@ -35,6 +35,7 @@ target_link_libraries(imgui PUBLIC
 add_executable(TCP_MIDI_Client
     main.cpp
     AppController.cpp
+    clockState.cpp
     GuiApp.cpp
     transportClient.cpp
     timeSync.cpp

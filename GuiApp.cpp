@@ -1,14 +1,10 @@
 #include "GuiApp.h"
-
 #include "AppController.h"
-
 #include <cstdlib>
 #include <iostream>
 #include <string>
-
 #include <SDL.h>
 #include <SDL_opengl.h>
-
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl2.h"
@@ -40,8 +36,8 @@ bool GuiApp::initialize() {
         "TCP MIDI",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        715,
-        825,
+        602,
+        668,
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI
     );
 

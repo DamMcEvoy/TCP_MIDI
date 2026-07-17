@@ -11,13 +11,29 @@
 #include <unistd.h>
 #include <chrono>
 #include <cstdint>
+#include "recoveryJournal.h"
 
 namespace {
 constexpr uint32_t kMidiFrameMagic = 0x4D494449;
 constexpr uint16_t kMidiFrameVersion = 1;
 constexpr uint16_t kMidiFrameHeaderSize = 24;
 constexpr uint32_t kMaxFrameSize = 4096;
-constexpr uint16_t kMidiFrameFlagsJrClock = 0x0002;
+
+const char* packetKindString(uint16_t flags) {
+    const bool hasRawMidi = (flags & MidiFrameFlags::RawMidi) != 0;
+    const bool hasJrClock = (flags & MidiFrameFlags::JrClock) != 0;
+    const bool hasRecoveryJournal = (flags & MidiFrameFlags::RecoveryJournal) != 0;
+
+    if (hasJrClock && !hasRawMidi && !hasRecoveryJournal) return "jr-only";
+    if (hasRawMidi && !hasJrClock && !hasRecoveryJournal) return "raw-midi";
+    if (hasRecoveryJournal && !hasRawMidi && !hasJrClock) return "midi+journal";
+    if (hasRawMidi && hasJrClock && !hasRecoveryJournal) return "raw-midi+jr";
+    if (hasRawMidi && hasRecoveryJournal && !hasJrClock) return "raw-midi+journal";
+    if (hasRawMidi && hasJrClock && hasRecoveryJournal) return "raw-midi+jr+journal";
+    if (!hasRawMidi && hasJrClock && hasRecoveryJournal) return "jr+journal";
+
+    return "unknown";
+}
 }
 
 TransportClient::TransportClient(const std::string& serverIp, int serverPort)
@@ -216,9 +232,11 @@ bool TransportClient::getClientId(std::string& outClientId) const {
 
 void TransportClient::startReceiveLoop() {
     if (recvRunning_.load()) {
+        std::cerr << "[TransportClient] startReceiveLoop already running" << std::endl;
         return;
     }
 
+    std::cerr << "[TransportClient] startReceiveLoop launching thread" << std::endl;
     recvRunning_ = true;
     receiveThread_ = std::thread(&TransportClient::receiveLoop, this);
 }
@@ -234,25 +252,26 @@ void TransportClient::stopReceiveLoop() {
 }
 
 void TransportClient::receiveLoop() {
+    std::cerr << "[TransportClient] receiveLoop entered" << std::endl;
     uint32_t lastSequence = 0;
     bool haveSequence = false;
 
     while (recvRunning_.load() && connected_.load()) {
-        // 1. Read 4-byte BE length prefix
         uint8_t lengthBytes[4];
         if (!readExact(lengthBytes, sizeof(lengthBytes))) break;
         const uint32_t totalLength = readBe32(lengthBytes);
+        std::cerr << "[TransportClient] Length prefix totalLength=" << totalLength << std::endl;
         if (totalLength < kMidiFrameHeaderSize || totalLength > kMaxFrameSize) {
             std::cerr << "[TransportClient] Invalid frame length: " << totalLength << std::endl;
-            connected_ = false; recvRunning_ = false; break;
+            connected_ = false;
+            recvRunning_ = false;
+            break;
         }
 
-        // 2. Read full frame
         std::vector<uint8_t> frame(totalLength);
         if (!readExact(frame.data(), frame.size())) break;
         const auto arrivalLocalTime = std::chrono::steady_clock::now();
 
-        // 3. Parse header
         const uint32_t magic = readBe32(frame.data());
         const uint16_t version = readBe16(frame.data() + 4);
         const uint16_t headerSize = readBe16(frame.data() + 6);
@@ -261,57 +280,145 @@ void TransportClient::receiveLoop() {
         const uint16_t payloadSize = readBe16(frame.data() + 20);
         const uint16_t flags = readBe16(frame.data() + 22);
 
-        // 4. Validate
         if (magic != kMidiFrameMagic || version != kMidiFrameVersion || headerSize != kMidiFrameHeaderSize) {
             std::cerr << "[TransportClient] Invalid frame header. magic=0x" << std::hex << magic << std::dec
                       << " version=" << version << " headerSize=" << headerSize << std::endl;
-            connected_ = false; recvRunning_ = false; break;
+            connected_ = false;
+            recvRunning_ = false;
+            break;
         }
+
         if (headerSize + payloadSize != totalLength) {
             std::cerr << "[TransportClient] Frame size mismatch. header=" << headerSize
                       << " payload=" << payloadSize << " total=" << totalLength << std::endl;
-            connected_ = false; recvRunning_ = false; break;
+            connected_ = false;
+            recvRunning_ = false;
+            break;
         }
 
-        // 5. Sequence check
         if (haveSequence && sequence != lastSequence + 1) {
-            std::cerr << "[TransportClient] Sequence gap. prev=" << lastSequence << " current=" << sequence << std::endl;
+            const uint32_t expected = lastSequence + 1;
+            const bool isJrClockOnly =
+                ((flags & MidiFrameFlags::JrClock) != 0) &&
+                ((flags & MidiFrameFlags::RawMidi) == 0) &&
+                ((flags & MidiFrameFlags::RecoveryJournal) == 0);
+
+            if (!isJrClockOnly) {
+                std::cerr << "[TransportClient] Non-contiguous server sequence on this client stream. "
+                          << "expected=" << expected
+                          << " current=" << sequence
+                          << " delta=" << (sequence - expected)
+                          << " flags=0x" << std::hex << flags << std::dec
+                          << std::endl;
+            }
         }
+
         lastSequence = sequence;
         haveSequence = true;
 
-        // 6. **NEW: Construct TimedMidiEvent**
         TimedMidiEvent event;
         event.sequence = sequence;
         event.serverTimestampNs = serverTimestampNs;
         event.flags = flags;
         event.arrivalLocalTime = arrivalLocalTime;
-        event.midiMessage.assign(frame.begin() + headerSize, frame.end());
 
-        if ((flags & kMidiFrameFlagsJrClock) != 0 && event.midiMessage.size() >= 14){
-            event.hasJrClock = true;
+        const uint8_t* payload = frame.data() + headerSize;
+        const std::size_t payloadBytes = payloadSize;
+        const bool hasRawMidi = (flags & MidiFrameFlags::RawMidi) != 0;
+        const bool hasJrClock = (flags & MidiFrameFlags::JrClock) != 0;
+        const bool hasRecoveryJournal = (flags & MidiFrameFlags::RecoveryJournal) != 0;
 
-            event.jrFreqPpm = 
-                (static_cast<int32_t>(event.midiMessage[2]) << 24) |
-                (static_cast<int32_t>(event.midiMessage[3]) << 16) |
-                (static_cast<int32_t>(event.midiMessage[4]) << 8)  |
-                static_cast<int32_t>(event.midiMessage[5]);
+        if (hasJrClock && !hasRawMidi && !hasRecoveryJournal) {
+            event.midiMessage.assign(payload, payload + payloadBytes);
 
-            uint64_t jrClockNs = 0;
-            for (int i = 6; i < 14; ++i){
-                jrClockNs = (jrClockNs << 8) | event.midiMessage[i];
+            if (payloadBytes >= 14) {
+                event.hasJrClock = true;
+                event.jrFreqPpm =
+                    (static_cast<int32_t>(payload[2]) << 24) |
+                    (static_cast<int32_t>(payload[3]) << 16) |
+                    (static_cast<int32_t>(payload[4]) << 8) |
+                    static_cast<int32_t>(payload[5]);
+
+                uint64_t jrClockNs = 0;
+                for (int i = 6; i < 14; ++i) {
+                    jrClockNs = (jrClockNs << 8) | payload[i];
+                }
+                event.jrServerClockNs = jrClockNs;
             }
-            event.jrServerClockNs = jrClockNs;
+
+        } else if (hasRawMidi && hasRecoveryJournal && !hasJrClock) {
+            if (payloadBytes < 4) {
+                std::cerr << "[TransportClient] Recovery-journal payload too short." << std::endl;
+                connected_ = false;
+                recvRunning_ = false;
+                break;
+            }
+
+            const uint16_t midiLen = readBe16(payload);
+            const std::size_t midiStart = 2;
+            const std::size_t journalLenField = midiStart + midiLen;
+
+            if (journalLenField + 2 > payloadBytes) {
+                std::cerr << "[TransportClient] Invalid recovery-journal payload: midiLen exceeds payload."
+                          << " midiLen=" << midiLen
+                          << " payloadBytes=" << payloadBytes << std::endl;
+                connected_ = false;
+                recvRunning_ = false;
+                break;
+            }
+
+            const uint16_t journalLen = readBe16(payload + journalLenField);
+            const std::size_t journalStart = journalLenField + 2;
+
+            if (journalStart + journalLen > payloadBytes) {
+                std::cerr << "[TransportClient] Invalid recovery-journal payload: journalLen exceeds payload."
+                          << " journalLen=" << journalLen
+                          << " payloadBytes=" << payloadBytes << std::endl;
+                connected_ = false;
+                recvRunning_ = false;
+                break;
+            }
+
+            event.midiMessage.assign(payload + midiStart, payload + midiStart + midiLen);
+            event.journalBytes.assign(payload + journalStart, payload + journalStart + journalLen);
+
+            auto decoded = RecoveryJournal::decode(event.journalBytes);
+            if (decoded.ok) {
+                RecoveryJournal::applyToEvent(decoded.snapshot, event);
+            } else {
+                std::cerr << "[TransportClient] Recovery journal decode failed for seq="
+                          << sequence << ": " << decoded.error << std::endl;
+            }
+
+        } else if (hasRawMidi && !hasJrClock && !hasRecoveryJournal) {
+            event.midiMessage.assign(payload, payload + payloadBytes);
+
+        } else {
+            std::cerr << "[TransportClient] Fallback parse for flags=0x"
+                      << std::hex << flags << std::dec
+                      << " kind=" << packetKindString(flags) << std::endl;
+
+            event.midiMessage.assign(payload, payload + payloadBytes);
         }
 
-
-
+        const char* kind = packetKindString(flags);
+        if (std::strcmp(kind, "jr-only") != 0) {
+            std::cerr << "[TransportClient] RX seq=" << sequence
+                      << " flags=0x" << std::hex << flags << std::dec
+                      << " kind=" << kind
+                      << " payloadBytes=" << payloadBytes
+                      << " midiBytes=" << event.midiMessage.size()
+                      << " journalBytes=" << event.journalBytes.size()
+                      << " hasJrClock=" << (event.hasJrClock ? "yes" : "no")
+                      << std::endl;
+        }
 
         ReceiveCallback callback;
         {
             std::lock_guard<std::mutex> lock(callbackMutex_);
             callback = receiveCallback_;
         }
+
         if (callback) {
             callback(event);
         }
@@ -338,7 +445,13 @@ bool TransportClient::readExact(uint8_t* dest, std::size_t bytesToRead) {
             continue;
         }
 
-        std::cerr << "[TransportClient] SSL_read failed, error=" << err << std::endl;
+        std::cerr << "[TransportClient] readExact failed"
+                  << " bytesToRead=" << bytesToRead
+                  << " totalRead=" << totalRead
+                  << " bytesRead=" << bytesRead
+                  << " sslErr=" << err
+                  << std::endl;
+
         connected_ = false;
         recvRunning_ = false;
         return false;

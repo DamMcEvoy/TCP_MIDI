@@ -42,6 +42,7 @@ add_executable(TCP_MIDI_Client
     receiveScheduler.cpp
     midiInputHandler.cpp
     midiOutputHandler.cpp
+    recoveryJournal.cpp
 )
 
 target_include_directories(TCP_MIDI_Client PRIVATE

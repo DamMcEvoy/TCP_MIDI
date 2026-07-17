@@ -29,10 +29,10 @@ struct ScheduledMidiMessage {
 
 struct ScheduledMidiCompare {
     bool operator()(const ScheduledMidiMessage& a, const ScheduledMidiMessage& b) const {
-        if (a.playAt != b.playAt) {
-            return a.playAt > b.playAt;
+        if (a.sequence != b.sequence) {
+            return a.sequence > b.sequence;
         }
-        return a.sequence > b.sequence;
+        return a.playAt > b.playAt;
     }
 };
 

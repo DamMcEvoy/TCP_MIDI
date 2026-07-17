@@ -219,23 +219,21 @@ void ReceiveScheduler::workerLoop() {
             const auto next = queue_.top();
             const auto now = std::chrono::steady_clock::now();
 
-            if (next.playAt > now) {
-                cv_.wait_until(lock, next.playAt, [this, &next] {
-                    if (!running_.load() || queue_.empty()) {
-                        return true;
-                    }
+        if (next.playAt > now) {
+            cv_.wait_until(lock, next.playAt, [this, &next] {
+                if (!running_.load() || queue_.empty()) {
+                    return true;
+                }
 
-                    const auto& top = queue_.top();
-                    if (top.playAt < next.playAt) {
-                        return true;
-                    }
-                    if (top.playAt == next.playAt && top.sequence < next.sequence) {
-                        return true;
-                    }
-                    return false;
-                });
-                continue;
-            }
+                const auto& top = queue_.top();
+                if (top.sequence < next.sequence) {
+                    return true;
+                }
+
+                return false;
+            });
+            continue;
+        }
 
             queue_.pop();
             auto callback = outputCallback_;

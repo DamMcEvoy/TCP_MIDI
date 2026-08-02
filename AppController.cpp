@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <utility>
+#include <chrono>
+#include <thread>
 
 AppController::AppController(const std::string& serverIp, int serverPort)
     : serverIp_(serverIp),
@@ -237,25 +239,61 @@ void AppController::wireCallbacks() {
 
     transportClient_->setReceiveCallback([this](const TimedMidiEvent& event) {
         if (timeSync_ && event.hasJrClock) {
-            timeSync_ ->updateJrClock(event.jrServerClockNs, event.jrFreqPpm);
+            timeSync_->updateJrClock(event.jrServerClockNs, event.jrFreqPpm);
         }
-        
+
         if (receiveScheduler_) {
             receiveScheduler_->enqueue(event);
         }
     });
 
-    receiveScheduler_->setOutputCallback([this](const std::vector<uint8_t>& midiMessage) {
-        if (!midiOutputHandler_) {
-            return;
-        }
-
-        if (!midiOutputHandler_->sendMessage(midiMessage)) {
-            std::cerr << "[AppController] Failed to send MIDI message to output device." << std::endl;
-        }
+    receiveScheduler_->setOutputCallback([this](const ScheduledMidiMessage& scheduled) {
+        sendScheduledMidi(scheduled);
     });
 
     callbacksWired_ = true;
+}
+
+void AppController::sendScheduledMidi(const ScheduledMidiMessage& scheduled) {
+    if (!midiOutputHandler_) {
+        return;
+    }
+
+    const auto targetSendTime =
+        scheduled.playAt - std::chrono::nanoseconds(kOutputLeadNs);
+
+    auto now = std::chrono::steady_clock::now();
+
+    if (now < targetSendTime) {
+        const auto remaining =
+            std::chrono::duration_cast<std::chrono::nanoseconds>(targetSendTime - now);
+
+        if (remaining > std::chrono::microseconds(200)) {
+            std::this_thread::sleep_until(targetSendTime - std::chrono::microseconds(100));
+        }
+
+        while (std::chrono::steady_clock::now() < targetSendTime) {
+        }
+    }
+
+    now = std::chrono::steady_clock::now();
+
+    const auto sendDeltaNs =
+        std::chrono::duration_cast<std::chrono::nanoseconds>(now - scheduled.playAt).count();
+
+    const auto leadAppliedNs =
+        std::chrono::duration_cast<std::chrono::nanoseconds>(scheduled.playAt - now).count();
+
+    std::cerr << "[AppController] Output send seq=" << scheduled.sequence
+              << " sendDeltaNs=" << sendDeltaNs
+              << " leadAppliedNs=" << leadAppliedNs
+              << " outputLeadNs=" << kOutputLeadNs
+              << " estimatedWaitNs=" << scheduled.estimatedWaitNs
+              << std::endl;
+
+    if (!midiOutputHandler_->sendMessage(scheduled.midiMessage)) {
+        std::cerr << "[AppController] Failed to send MIDI message to output device." << std::endl;
+    }
 }
 
 bool AppController::startStreaming() {

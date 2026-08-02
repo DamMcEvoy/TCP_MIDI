@@ -38,7 +38,7 @@ struct ScheduledMidiCompare {
 
 class ReceiveScheduler {
 public:
-    using OutputCallback = std::function<void(const std::vector<uint8_t>&)>;
+    using OutputCallback = std::function<void(const ScheduledMidiMessage&)>;
 
     ReceiveScheduler(TimeSync& timeSync, ClockState& clockState);
     ~ReceiveScheduler();

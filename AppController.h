@@ -49,7 +49,9 @@ private:
     void closeSelectedPorts();
     void wireCallbacks();
     void handleClockMessage(const MidiInputHandler::ClockMessage& clockMessage);
+    void sendScheduledMidi(const ScheduledMidiMessage& scheduled);
     static const char* clockMessageTypeToString(MidiInputHandler::ClockMessageType type);
+    static constexpr int64_t kOutputLeadNs = 4'000'000; // 4 ms
 
     std::string serverIp_;
     int serverPort_;

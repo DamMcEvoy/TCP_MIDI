@@ -254,7 +254,7 @@ void ReceiveScheduler::workerLoop() {
             lock.unlock();
 
             if (callback) {
-                callback(next.midiMessage);
+                callback(next);
             } else {
                 std::cerr << "[ReceiveScheduler] No output callback registered." << std::endl;
             }

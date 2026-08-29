@@ -11,6 +11,18 @@ find_package(Libremidi REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 
+ --- Fetch libremidi from GitHub ---
+include(FetchContent)
+
+FetchContent_Declare(
+    libremidi
+    GIT_REPOSITORY https://github.com/celtera/libremidi.git
+    GIT_TAG main
+)
+
+# This will clone and add_subdirectory(libremidi)
+FetchContent_MakeAvailable(libremidi)
+
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui)
 
 add_library(imgui STATIC

@@ -208,7 +208,7 @@ bool TransportClient::isConnected() const {
     return connected_.load();
 }
 
-bool TransportClient::sendMidiMessage(const std::vector<unsigned char>& midiMessage) {
+bool TransportClient::sendMidiMessage(const libremidi::midi_bytes& midiMessage) {
     if (!connected_.load() || midiMessage.empty()) {
         return false;
     }

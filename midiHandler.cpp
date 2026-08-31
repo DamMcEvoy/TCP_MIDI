@@ -15,7 +15,7 @@
 #include "TcpConnection.h"
 
 // Shared MIDI output message queue and synchronization
-std::queue<std::vector<unsigned char>> midiOutputQueue;
+std::queue<libremidi::midi_bytes> midiOutputQueue;
 std::mutex outputMutex;
 std::condition_variable outputCv;
 
@@ -48,7 +48,7 @@ void midiOutputThreadFunc(RtMidiOut* midiOut) {
 }
 
 // Callback inserted by TcpConnection to send MIDI messages from network to output queue
-void onMidiReceivedFromNetwork(const std::vector<unsigned char>& midiMessage) {
+void onMidiReceivedFromNetwork(const libremidi::midi_bytes& midiMessage) {
     {
         std::lock_guard<std::mutex> lock(outputMutex);
         midiOutputQueue.push(midiMessage);
@@ -102,7 +102,7 @@ int runMidiHandler(TcpConnection* tcpConnection) {
         }
         midiIn.openPort(chosenInput);
 
-        midiIn.setCallback([](double, std::vector<unsigned char>* message, void* userData) {
+        midiIn.setCallback([](double, libremidi::midi_bytes* message, void* userData) {
             TcpConnection* tcpConn = static_cast<TcpConnection*>(userData);
             if (message && tcpConn && tcpConn->isConnected()) {
                 tcpConn->sendMidiMessage(*message);

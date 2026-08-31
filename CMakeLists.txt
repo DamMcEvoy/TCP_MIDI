@@ -7,21 +7,23 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
-find_package(Libremidi REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(Libremidi)
 
-#Fetch libremidi from GitHub
-include(FetchContent)
+if(NOT Libremidi_FOUND)
+  #Fetch libremidi from GitHub
+  include(FetchContent)
 
-FetchContent_Declare(
-    libremidi
-    GIT_REPOSITORY https://github.com/celtera/libremidi.git
-    GIT_TAG main
-)
+  FetchContent_Declare(
+      libremidi
+      GIT_REPOSITORY https://github.com/celtera/libremidi.git
+      GIT_TAG master
+  )
 
-# This will clone and add_subdirectory(libremidi)
-FetchContent_MakeAvailable(libremidi)
+  # This will clone and add_subdirectory(libremidi)
+  FetchContent_MakeAvailable(libremidi)
+endif()
 
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui)
 

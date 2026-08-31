@@ -9,7 +9,9 @@
 #include <mutex>
 #include <queue>
 #include <thread>
-#include <vector>
+
+#include <libremidi/libremidi.hpp>
+
 #include "clockState.h"
 #include "timeSync.h"
 #include "TimedMidiEvent.h"
@@ -20,7 +22,8 @@ struct ScheduledMidiMessage {
     std::chrono::steady_clock::time_point arrivalLocalTime{};
     std::chrono::steady_clock::time_point playAt{};
     int64_t estimatedWaitNs = 0;
-    std::vector<uint8_t> midiMessage;
+    //std::vector<uint8_t> midiMessage;
+    libremidi::midi_bytes midiMessage;
     bool runningAtEnqueue = false;
     bool hasSongPositionAtEnqueue = false;
     uint64_t pulseCountAtEnqueue = 0;

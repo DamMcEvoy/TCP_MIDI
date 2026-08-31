@@ -11,7 +11,7 @@ find_package(Libremidi REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 
- --- Fetch libremidi from GitHub ---
+#Fetch libremidi from GitHub
 include(FetchContent)
 
 FetchContent_Declare(

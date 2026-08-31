@@ -17,7 +17,7 @@ That keeps playout device I/O out of both the transport layer and the timing lay
 
 class MidiInputHandler {
 public:
-    using InputCallback = std::function<void(const std::vector<unsigned char>&)>;
+    using InputCallback = std::function<void(const libremidi::midi_bytes&)>;
     using MessageReceivedCallback = std::function<void(const std::string&)>;
 
     enum class ClockMessageType {
@@ -35,7 +35,7 @@ public:
 
     struct ClockMessage {
         ClockMessageType type;
-        std::vector<unsigned char> bytes;
+        libremidi::midi_bytes bytes;
         int songPosition = -1;
         int songSelect = -1;
     };
@@ -61,10 +61,10 @@ private:
     std::unique_ptr<libremidi::midi_in> midiIn_;
     libremidi::input_configuration config_;
 
-    static bool isClockRelatedMessage(const std::vector<unsigned char>& midiMessage);
-    static ClockMessage parseClockMessage(const std::vector<unsigned char>& midiMessage);
+    static bool isClockRelatedMessage(const libremidi::midi_bytes& midiMessage);
+    static ClockMessage parseClockMessage(const libremidi::midi_bytes& midiMessage);
     static ClockMessageType classifyClockMessage(unsigned char status);
-    std::string formatMidiMessage(const std::vector<unsigned char>& midiMessage) const;
+    std::string formatMidiMessage(const libremidi::midi_bytes& midiMessage) const;
 };
 
 #endif // MIDI_INPUT_HANDLER_H

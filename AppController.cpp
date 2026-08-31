@@ -210,7 +210,7 @@ void AppController::wireCallbacks() {
         return;
     }
 
-    midiInputHandler_->setInputCallback([this](const std::vector<uint8_t>& midiMessage) {
+    midiInputHandler_->setInputCallback([this](const libremidi::midi_bytes& midiMessage) {
         if (!transportClient_ || !transportClient_->isConnected()) {
             std::cerr << "[AppController] Cannot send MIDI, transport disconnected." << std::endl;
             return;

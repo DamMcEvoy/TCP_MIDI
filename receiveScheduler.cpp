@@ -155,8 +155,7 @@ void ReceiveScheduler::enqueue(const TimedMidiEvent& event) {
 
     case TimeSync::SchedulingMode::Anchor:
     schedulingModeText = "anchor";
-    playAt = timeSync_.computePlayTime(
-        event.serverTimestampNs + static_cast<uint64_t>(kDefaultJitterBufferNs));
+    playAt = timeSync_.computePlayTime(event.serverTimestampNs);
 
         break;
 

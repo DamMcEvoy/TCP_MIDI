@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
+find_package(Libremidi OPTIONAL)
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Libremidi)

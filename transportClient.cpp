@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <chrono>
 #include <cstdint>
+#include <cerrno>
 #include "recoveryJournal.h"
 
 namespace {
@@ -434,7 +435,15 @@ bool TransportClient::readExact(uint8_t* dest, std::size_t bytesToRead) {
     std::size_t totalRead = 0;
 
     while (recvRunning_.load() && connected_.load() && totalRead < bytesToRead) {
-        const int bytesRead = SSL_read(ssl_, dest + totalRead, static_cast<int>(bytesToRead - totalRead));
+        errno = 0;  // ADDED: clear the previous operating-system error
+
+        const int bytesRead = SSL_read(
+            ssl_,
+            dest + totalRead,
+            static_cast<int>(bytesToRead - totalRead));
+
+        const int savedErrno = errno;  // ADDED: capture immediately after SSL_read
+
         if (bytesRead > 0) {
             totalRead += static_cast<std::size_t>(bytesRead);
             continue;
@@ -450,6 +459,8 @@ bool TransportClient::readExact(uint8_t* dest, std::size_t bytesToRead) {
                   << " totalRead=" << totalRead
                   << " bytesRead=" << bytesRead
                   << " sslErr=" << err
+                  << " errno=" << savedErrno                    // ADDED
+                  << " errnoText=" << std::strerror(savedErrno) // ADDED
                   << std::endl;
 
         connected_ = false;

@@ -18,6 +18,8 @@ MidiInputHandler::MidiInputHandler()
       messageReceivedCallback_(nullptr),
       clockCallback_(nullptr),
       midiIn_(nullptr) {
+    config_.ignore_timing = false;
+    
     config_.on_message = [this](const libremidi::message& msg) {
         if (msg.bytes.empty()) {
             return;
@@ -110,7 +112,7 @@ void MidiInputHandler::setClockCallback(ClockCallback callback) {
     clockCallback_ = std::move(callback);
 }
 
-bool MidiInputHandler::isClockRelatedMessage(const libremidi::midi_bytes& midiMessage) {
+bool MidiInputHandler::isClockRelatedMessage(const std::vector<unsigned char>& midiMessage) {
     if (midiMessage.empty()) {
         return false;
     }
@@ -132,7 +134,7 @@ bool MidiInputHandler::isClockRelatedMessage(const libremidi::midi_bytes& midiMe
 }
 
 MidiInputHandler::ClockMessage MidiInputHandler::parseClockMessage(
-    const libremidi::midi_bytes& midiMessage) {
+    const std::vector<unsigned char>& midiMessage) {
     ClockMessage message{
         classifyClockMessage(midiMessage.empty() ? 0x00 : midiMessage[0]),
         midiMessage,
@@ -173,7 +175,7 @@ MidiInputHandler::ClockMessageType MidiInputHandler::classifyClockMessage(unsign
 }
 
 std::string MidiInputHandler::formatMidiMessage(
-    const libremidi::midi_bytes& midiMessage) const {
+    const std::vector<unsigned char>& midiMessage) const {
     std::ostringstream oss;
     oss << "RX:";
     for (unsigned char byte : midiMessage) {

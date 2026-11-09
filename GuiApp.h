@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
 
 typedef void* SDL_GLContext;
 struct SDL_Window;
@@ -40,6 +41,7 @@ private:
 
     std::string statusMessage_ = "Ready.";
 
+    std::mutex midiLogMutex_;
     std::vector<std::string> receivedMidiLog_;
     std::vector<std::string> sentMidiLog_;
     bool autoScrollMidiLogs_ = true;

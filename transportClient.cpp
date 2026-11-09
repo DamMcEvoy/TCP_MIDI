@@ -1,7 +1,9 @@
 #include "transportClient.h"
 #include <arpa/inet.h>
 #include <csignal>
+#include <cerrno>
 #include <cstring>
+#include <sstream>
 #include <iostream>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -11,7 +13,6 @@
 #include <unistd.h>
 #include <chrono>
 #include <cstdint>
-#include <cerrno>
 #include "recoveryJournal.h"
 
 namespace {
@@ -101,7 +102,7 @@ bool TransportClient::createSocketAndConnect() {
         return false;
     }
 
-    setSocketRecvTimeout(100);
+    setSocketRecvTimeout(2500);
     return true;
 }
 
@@ -209,7 +210,7 @@ bool TransportClient::isConnected() const {
     return connected_.load();
 }
 
-bool TransportClient::sendMidiMessage(const libremidi::midi_bytes& midiMessage) {
+bool TransportClient::sendMidiMessage(const std::vector<unsigned char>& midiMessage) {
     if (!connected_.load() || midiMessage.empty()) {
         return false;
     }
@@ -431,37 +432,56 @@ void TransportClient::receiveLoop() {
     }
 }
 
-bool TransportClient::readExact(uint8_t* dest, std::size_t bytesToRead) {
+bool TransportClient::readExact(uint8_t* dest,
+                                std::size_t bytesToRead) {
     std::size_t totalRead = 0;
 
-    while (recvRunning_.load() && connected_.load() && totalRead < bytesToRead) {
-        errno = 0;  // ADDED: clear the previous operating-system error
+    while (recvRunning_.load() &&
+           connected_.load() &&
+           totalRead < bytesToRead) {
+        ERR_clear_error();
+        errno = 0;
 
         const int bytesRead = SSL_read(
             ssl_,
             dest + totalRead,
             static_cast<int>(bytesToRead - totalRead));
 
-        const int savedErrno = errno;  // ADDED: capture immediately after SSL_read
+        const int savedErrno = errno;
 
         if (bytesRead > 0) {
             totalRead += static_cast<std::size_t>(bytesRead);
             continue;
         }
 
-        const int err = SSL_get_error(ssl_, bytesRead);
-        if (err == SSL_ERROR_WANT_READ || err == SSL_ERROR_WANT_WRITE) {
+        const int sslError = SSL_get_error(ssl_, bytesRead);
+
+        if (sslError == SSL_ERROR_WANT_READ ||
+            sslError == SSL_ERROR_WANT_WRITE) {
             continue;
         }
 
-        std::cerr << "[TransportClient] readExact failed"
-                  << " bytesToRead=" << bytesToRead
-                  << " totalRead=" << totalRead
-                  << " bytesRead=" << bytesRead
-                  << " sslErr=" << err
-                  << " errno=" << savedErrno                    // ADDED
-                  << " errnoText=" << std::strerror(savedErrno) // ADDED
-                  << std::endl;
+        std::ostringstream diagnostic;
+        diagnostic << "[TransportClient] readExact failed"
+                   << " bytesToRead=" << bytesToRead
+                   << " totalRead=" << totalRead
+                   << " bytesRead=" << bytesRead
+                   << " sslErr=" << sslError
+                   << " errno=" << savedErrno
+                   << " errnoText="
+                   << (savedErrno != 0
+                           ? std::strerror(savedErrno)
+                           : "none");
+
+        unsigned long errorCode = 0;
+        while ((errorCode = ERR_get_error()) != 0) {
+            char errorText[256];
+            ERR_error_string_n(errorCode, errorText,
+                               sizeof(errorText));
+            diagnostic << " opensslError=" << errorText;
+        }
+
+        std::cerr << diagnostic.str() << std::endl;
 
         connected_ = false;
         recvRunning_ = false;

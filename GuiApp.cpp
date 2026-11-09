@@ -138,6 +138,8 @@ int GuiApp::run() {
 }
 
 void GuiApp::addReceivedMidiMessage(const std::string& message) {
+    std::lock_guard<std::mutex> lock(midiLogMutex_);
+
     receivedMidiLog_.push_back(message);
     if (receivedMidiLog_.size() > maxMidiLogEntries_) {
         receivedMidiLog_.erase(receivedMidiLog_.begin());
@@ -145,6 +147,8 @@ void GuiApp::addReceivedMidiMessage(const std::string& message) {
 }
 
 void GuiApp::addSentMidiMessage(const std::string& message) {
+    std::lock_guard<std::mutex> lock(midiLogMutex_);
+
     sentMidiLog_.push_back(message);
     if (sentMidiLog_.size() > maxMidiLogEntries_) {
         sentMidiLog_.erase(sentMidiLog_.begin());
@@ -152,6 +156,15 @@ void GuiApp::addSentMidiMessage(const std::string& message) {
 }
 
 void GuiApp::render() {
+    std::vector<std::string> receivedMidiSnapshot;
+    std::vector<std::string> sentMidiSnapshot;
+
+    {
+        std::lock_guard<std::mutex> lock(midiLogMutex_);
+        receivedMidiSnapshot = receivedMidiLog_;
+        sentMidiSnapshot = sentMidiLog_;
+    }
+
     ImGui::Begin("TCP MIDI Interface");
 
     ImGui::SeparatorText("Server Connection");
@@ -259,7 +272,7 @@ void GuiApp::render() {
     ImGui::Checkbox("Auto-scroll MIDI logs", &autoScrollMidiLogs_);
     ImGui::SeparatorText("Sent MIDI Events");
     ImGui::BeginChild("ReceivedMidiLog", ImVec2(0, 140), true);
-    for (const auto& line : receivedMidiLog_) {
+    for (const auto& line : receivedMidiSnapshot) {
         ImGui::TextUnformatted(line.c_str());
     }
     if (autoScrollMidiLogs_ && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
@@ -269,7 +282,7 @@ void GuiApp::render() {
     //MIDI naming conventions are confusiing for users, an input port is the receiving port in this context. 
     ImGui::SeparatorText("Received MIDI Events");
     ImGui::BeginChild("SentMidiLog", ImVec2(0, 140), true);
-    for (const auto& line : sentMidiLog_) {
+    for (const auto& line : sentMidiSnapshot) {
         ImGui::TextUnformatted(line.c_str());
     }
     if (autoScrollMidiLogs_ && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {

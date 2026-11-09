@@ -8,10 +8,8 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <condition_variable>
 
 #include <openssl/ssl.h>
-#include <libremidi/libremidi.hpp>
 
 #include "TimedMidiEvent.h"
 
@@ -26,7 +24,7 @@ public:
     void disconnect();
     bool isConnected() const;
 
-    bool sendMidiMessage(const libremidi::midi_bytes& midiMessage);
+    bool sendMidiMessage(const std::vector<unsigned char>& midiMessage);
     void setReceiveCallback(ReceiveCallback callback);
 
     bool getClientId(std::string& outClientId) const;

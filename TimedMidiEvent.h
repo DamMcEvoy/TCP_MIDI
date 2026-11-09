@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <vector>
 
+#include <libremidi/libremidi.hpp>
+
 namespace MidiFrameFlags {
 constexpr uint16_t RawMidi = 0x0001u;
 constexpr uint16_t JrClock = 0x0002u;
@@ -12,7 +14,7 @@ constexpr uint16_t RecoveryJournal = 0x0004u;
 }
 
 struct TimedMidiEvent {
-    std::vector<uint8_t> midiMessage;
+    libremidi::midi_bytes midiMessage;
     std::vector<uint8_t> journalBytes;
 
     uint32_t sequence = 0;

@@ -7,23 +7,21 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
-find_package(Libremidi OPTIONAL)
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Libremidi)
 
 if(NOT Libremidi_FOUND)
-  #Fetch libremidi from GitHub
-  include(FetchContent)
+    # Fetch libremidi only when an installed package is not found.
+    include(FetchContent)
 
-  FetchContent_Declare(
-      libremidi
-      GIT_REPOSITORY https://github.com/celtera/libremidi.git
-      GIT_TAG master
-  )
+    FetchContent_Declare(
+        libremidi
+        GIT_REPOSITORY https://github.com/celtera/libremidi.git
+        GIT_TAG master
+    )
 
-  # This will clone and add_subdirectory(libremidi)
-  FetchContent_MakeAvailable(libremidi)
+    FetchContent_MakeAvailable(libremidi)
 endif()
 
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui)
@@ -74,6 +72,9 @@ target_link_libraries(TCP_MIDI_Client PRIVATE
     OpenGL::GL
 )
 
-target_compile_definitions(TCP_MIDI_Client PRIVATE LIBREMIDI_HEADER_ONLY=1)
+target_compile_definitions(
+    TCP_MIDI_Client PRIVATE
+    LIBREMIDI_HEADER_ONLY=1
+)
 
 message(STATUS "=== Modular TCP-MIDI TCP_MIDI_Client configured ===")

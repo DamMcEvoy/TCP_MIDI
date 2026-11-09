@@ -23,14 +23,14 @@ public:
     bool openPort(const libremidi::output_port& port);
     void closePort();
     bool isOpen() const;
-    bool sendMessage(const std::vector<unsigned char>& midiMessage);
+    bool sendMessage(const libremidi::midi_bytes& midiMessage);
     void setMessageSentCallback(std::function<void(const std::string&)> callback);
 
 private:
     bool open_;
     std::unique_ptr<libremidi::midi_out> midiOut_;
     std::function<void(const std::string&)> messageSentCallback_;
-    std::string formatMidiMessage(const std::vector<unsigned char>& midiMessage) const;
+    std::string formatMidiMessage(const libremidi::midi_bytes& midiMessage) const;
 };
 
 #endif // MIDI_OUTPUT_HANDLER_H

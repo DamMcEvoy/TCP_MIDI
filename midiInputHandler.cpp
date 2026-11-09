@@ -1,5 +1,5 @@
 /*
-MidiOutputHandler is intentionally narrow: it owns libremidi::midi_in, 
+MidiInputHandler is intentionally narrow: it owns libremidi::midi_in, 
 tracks whether the input port is open, 
 and exposes a Inpu callback for the scheduler to use. 
 That keeps playout device I/O out of both the transport layer and the timing layer.
@@ -112,7 +112,7 @@ void MidiInputHandler::setClockCallback(ClockCallback callback) {
     clockCallback_ = std::move(callback);
 }
 
-bool MidiInputHandler::isClockRelatedMessage(const std::vector<unsigned char>& midiMessage) {
+bool MidiInputHandler::isClockRelatedMessage(const libremidi::midi_bytes& midiMessage) {
     if (midiMessage.empty()) {
         return false;
     }
@@ -134,7 +134,7 @@ bool MidiInputHandler::isClockRelatedMessage(const std::vector<unsigned char>& m
 }
 
 MidiInputHandler::ClockMessage MidiInputHandler::parseClockMessage(
-    const std::vector<unsigned char>& midiMessage) {
+    const libremidi::midi_bytes& midiMessage) {
     ClockMessage message{
         classifyClockMessage(midiMessage.empty() ? 0x00 : midiMessage[0]),
         midiMessage,
@@ -175,7 +175,7 @@ MidiInputHandler::ClockMessageType MidiInputHandler::classifyClockMessage(unsign
 }
 
 std::string MidiInputHandler::formatMidiMessage(
-    const std::vector<unsigned char>& midiMessage) const {
+    const libremidi::midi_bytes& midiMessage) const {
     std::ostringstream oss;
     oss << "RX:";
     for (unsigned char byte : midiMessage) {

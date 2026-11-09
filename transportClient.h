@@ -2,6 +2,7 @@
 #define TRANSPORT_CLIENT_H
 
 #include <atomic>
+#include <condition_variable>
 #include <cstdint>
 #include <functional>
 #include <mutex>
@@ -10,6 +11,7 @@
 #include <vector>
 
 #include <openssl/ssl.h>
+#include <libremidi/libremidi.hpp>
 
 #include "TimedMidiEvent.h"
 
@@ -24,7 +26,7 @@ public:
     void disconnect();
     bool isConnected() const;
 
-    bool sendMidiMessage(const std::vector<unsigned char>& midiMessage);
+    bool sendMidiMessage(const libremidi::midi_bytes& midiMessage);
     void setReceiveCallback(ReceiveCallback callback);
 
     bool getClientId(std::string& outClientId) const;

@@ -72,7 +72,7 @@ bool MidiOutputHandler::isOpen() const {
     return open_;
 }
 
-bool MidiOutputHandler::sendMessage(const std::vector<unsigned char>& midiMessage) {
+bool MidiOutputHandler::sendMessage(const libremidi::midi_bytes& midiMessage) {
     if (!open_ || !midiOut_) {
         std::cerr << "[MidiOutputHandler] Output port is not open." << std::endl;
         return false;
@@ -106,7 +106,7 @@ void MidiOutputHandler::setMessageSentCallback(std::function<void(const std::str
     messageSentCallback_ = std::move(callback);
 }
 
-std::string MidiOutputHandler::formatMidiMessage(const std::vector<unsigned char>& midiMessage) const {
+std::string MidiOutputHandler::formatMidiMessage(const libremidi::midi_bytes& midiMessage) const {
     std::ostringstream oss;
     oss << "TX:";
     for (unsigned char byte : midiMessage) {
